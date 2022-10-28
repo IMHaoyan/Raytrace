@@ -1,0 +1,3 @@
+/home/haoyan/Raytrace/build/CMakeFiles/rebuild_cache.dir
+/home/haoyan/Raytrace/build/CMakeFiles/edit_cache.dir
+/home/haoyan/Raytrace/build/CMakeFiles/Raytrace.dir
