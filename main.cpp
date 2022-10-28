@@ -1,7 +1,8 @@
 #include "color.h"
 #include "ray.h"
 #include "vec3.h"
-
+#include "sphere.h"
+#include "hittalbe.h"
 #include <iostream>
 using namespace std;
 double hit_sphere(const point3& center,double radius,const ray& r){
@@ -17,10 +18,11 @@ double hit_sphere(const point3& center,double radius,const ray& r){
     }
 }
 color ray_color(const ray& r) {//the color of ray direction's screen pixel
+    sphere sphere(point3(0,0,-1),0.5);
     auto t = hit_sphere(point3(0,0,-1),0.5,r);
-    if(t >= 0.0){
-        vec3 n = r.at(t) - point3(0,0,-1);
-        auto N = unit_vector(n);
+    hit_record hit_rec;
+    if(sphere.hit(r,0,10,hit_rec)){
+        vec3 N = hit_rec.normal;
         return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
     }
     
