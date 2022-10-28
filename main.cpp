@@ -2,7 +2,7 @@
 #include "ray.h"
 #include "vec3.h"
 #include "sphere.h"
-#include "hittalbe.h"
+#include "hittable.h"
 #include <iostream>
 using namespace std;
 double hit_sphere(const point3& center,double radius,const ray& r){

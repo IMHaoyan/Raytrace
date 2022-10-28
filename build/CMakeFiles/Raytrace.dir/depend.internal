@@ -3,7 +3,7 @@
 
 CMakeFiles/Raytrace.dir/main.cpp.o
  /home/haoyan/Raytrace/color.h
- /home/haoyan/Raytrace/hittalbe.h
+ /home/haoyan/Raytrace/hittable.h
  /home/haoyan/Raytrace/main.cpp
  /home/haoyan/Raytrace/ray.h
  /home/haoyan/Raytrace/sphere.h
