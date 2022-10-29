@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "Raytrace.h"
 
 using namespace std;
 
@@ -61,7 +62,7 @@ class vec3 {
 using point3 = vec3;   // 3D point
 using color = vec3;    // RGB color
 // vec3 Utility Functions
-vec3 random_in_unit_sphere(){
+vec3 random_in_unit_sphere(){//sample in the whole sphere
     while (true){
         auto p = vec3::random(-1,1);
         if(p.length() < 1)
@@ -112,7 +113,14 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
-vec3 random_unit_vector(){
+vec3 random_unit_vector(){//sample in the sphere surface
     return unit_vector(random_in_unit_sphere());
+}
+vec3 random_in_hemisphere(const vec3& normal){//sample in the sphere surface
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if(dot(in_unit_sphere,normal) > 0.0)
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;
 }
 #endif

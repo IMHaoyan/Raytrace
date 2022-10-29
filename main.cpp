@@ -13,6 +13,7 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
     if(world.hit(r,0.001,infinity,rec)){
         //return 0.5*color(rec.normal + color(1,1,1));//map normal to color field
         point3 target = rec.p + rec.normal + random_unit_vector();
+        //point3 target = rec.p + random_in_hemisphere(rec.normal);
         //center: rec.p + rec.normal     target is a random point in the sphere
         return 0.5*color(ray_color(ray(rec.p,target- rec.p),world,depth-1));
     }
