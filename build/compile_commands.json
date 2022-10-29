@@ -1,7 +1,7 @@
 [
 {
   "directory": "/home/haoyan/Raytrace/build",
-  "command": "/usr/bin/c++      -o CMakeFiles/Raytrace.dir/main.cpp.o -c /home/haoyan/Raytrace/main.cpp",
+  "command": "/usr/bin/g++    -g   -o CMakeFiles/Raytrace.dir/main.cpp.o -c /home/haoyan/Raytrace/main.cpp",
   "file": "/home/haoyan/Raytrace/main.cpp"
 }
 ]

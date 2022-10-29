@@ -6,6 +6,20 @@
 
 #IncludeRegexTransform: 
 
+/home/haoyan/Raytrace/Raytrace.h
+cmath
+-
+cstdlib
+-
+limits
+-
+memory
+-
+vec3.h
+/home/haoyan/Raytrace/vec3.h
+ray.h
+/home/haoyan/Raytrace/ray.h
+
 /home/haoyan/Raytrace/color.h
 vec3.h
 /home/haoyan/Raytrace/vec3.h
@@ -18,17 +32,23 @@ vec3.h
 ray.h
 /home/haoyan/Raytrace/ray.h
 
-/home/haoyan/Raytrace/main.cpp
-color.h
-/home/haoyan/Raytrace/color.h
-ray.h
-/home/haoyan/Raytrace/ray.h
-vec3.h
-/home/haoyan/Raytrace/vec3.h
-sphere.h
-/home/haoyan/Raytrace/sphere.h
+/home/haoyan/Raytrace/hittable_list.h
 hittable.h
 /home/haoyan/Raytrace/hittable.h
+memory
+-
+vector
+-
+
+/home/haoyan/Raytrace/main.cpp
+Raytrace.h
+/home/haoyan/Raytrace/Raytrace.h
+color.h
+/home/haoyan/Raytrace/color.h
+sphere.h
+/home/haoyan/Raytrace/sphere.h
+hittable_list.h
+/home/haoyan/Raytrace/hittable_list.h
 iostream
 -
 

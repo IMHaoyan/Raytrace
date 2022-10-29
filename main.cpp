@@ -1,33 +1,17 @@
+#include "Raytrace.h"
 #include "color.h"
-#include "ray.h"
-#include "vec3.h"
 #include "sphere.h"
-#include "hittable.h"
+#include "hittable_list.h"
 #include <iostream>
 using namespace std;
-double hit_sphere(const point3& center,double radius,const ray& r){
-    vec3 oc = r.origin() - center;
-    auto a = dot(r.direction(),r.direction());//length_square
-    auto half_b = dot(r.direction(),oc);
-    auto c = dot(oc,oc) - radius*radius;
-    auto discriminant = half_b*half_b - a*c;
-    if(discriminant>0){
-        return (-half_b - sqrt(discriminant)) / a;
-    }else{
-        return -1.0;
+color ray_color(const ray& r, const hittable& world) {//the color of ray direction's screen pixel
+
+    hit_record rec;
+    if(world.hit(r,0,infinity,rec)){
+        return 0.5*color(rec.normal + color(1,1,1));
     }
-}
-color ray_color(const ray& r) {//the color of ray direction's screen pixel
-    sphere sphere(point3(0,0,-1),0.5);
-    auto t = hit_sphere(point3(0,0,-1),0.5,r);
-    hit_record hit_rec;
-    if(sphere.hit(r,0,10,hit_rec)){
-        vec3 N = hit_rec.normal;
-        return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
-    }
-    
     vec3 unit_direction = unit_vector(r.direction());
-    t = 0.5*(unit_direction.y() + 1.0);//map y to 0~1
+    auto t = 0.5*(unit_direction.y() + 1.0);//map y to 0~1
     return t*color(0.5, 0.7, 1.0) + (1.0-t)*color(1.0, 1.0, 1.0);
 }
 int main() {
@@ -36,8 +20,11 @@ int main() {
     const auto aspect_ratio = 16.0 / 9.0;
     const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
+    //World
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0,0,-1),0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1),100));
     // Camera
-
     auto viewport_height = 2.0;//the height of view port is const 2
     auto viewport_width = aspect_ratio * viewport_height;
     auto focal_length = 1.0;
@@ -56,7 +43,7 @@ int main() {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r,world);
             write_color(cout, pixel_color);
         }
     }
