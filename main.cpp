@@ -4,6 +4,7 @@
 #include "hittable_list.h"
 #include "camera.h"
 #include <iostream>
+#include "material.h"
 using namespace std;
 color ray_color(const ray& r, const hittable& world,int depth) {//the color of ray direction's screen pixel
     if(depth<=0){
@@ -11,11 +12,16 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
     }
     hit_record rec;
     if(world.hit(r,0.001,infinity,rec)){
-        //return 0.5*color(rec.normal + color(1,1,1));//map normal to color field
-        point3 target = rec.p + rec.normal + random_unit_vector();
-        //point3 target = rec.p + random_in_hemisphere(rec.normal);
-        //center: rec.p + rec.normal     target is a random point in the sphere
-        return 0.5*color(ray_color(ray(rec.p,target- rec.p),world,depth-1));
+        // return 0.5*color(rec.normal + color(1,1,1));//map normal to color field
+        // point3 target = rec.p + random_in_hemisphere(rec.normal);
+        // point3 target = rec.p + rec.normal + random_unit_vector();
+        // return 0.5*color(ray_color(ray(rec.p,target- rec.p),world,depth-1));
+        ray scattered;
+        color attenuation;
+        if (rec.mat_ptr->scatter(r,rec,attenuation,scattered)){
+            return attenuation * ray_color(scattered, world, depth-1);
+        }
+        return color(0,0,0);
     }
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);//map y to 0~1
@@ -31,8 +37,19 @@ int main() {
     const int max_depth = 50;
     //World
     hittable_list world;
-    world.add(make_shared<sphere>(point3(0,0,-1),0.5));
-    world.add(make_shared<sphere>(point3(0,-100.5,-1),100));
+    
+    // world.add(make_shared<sphere>(point3(0,0,-1),0.5));
+    // world.add(make_shared<sphere>(point3(0,-100.5,-1),100));
+    
+    auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+    auto material_center = make_shared<lambertian>(color(0.7, 0.3, 0.3));
+    auto material_left   = make_shared<metal>(color(0.8, 0.8, 0.8));
+    auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2));
+
+    world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
+    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
     //camera
     camera cam;
     // Render

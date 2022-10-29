@@ -7,6 +7,7 @@ CMakeFiles/Raytrace.dir/main.cpp.o: ../color.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../hittable.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../hittable_list.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../main.cpp
+CMakeFiles/Raytrace.dir/main.cpp.o: ../material.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../ray.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../sphere.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../vec3.h

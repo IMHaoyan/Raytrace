@@ -8,6 +8,7 @@ CMakeFiles/Raytrace.dir/main.cpp.o
  /home/haoyan/Raytrace/hittable.h
  /home/haoyan/Raytrace/hittable_list.h
  /home/haoyan/Raytrace/main.cpp
+ /home/haoyan/Raytrace/material.h
  /home/haoyan/Raytrace/ray.h
  /home/haoyan/Raytrace/sphere.h
  /home/haoyan/Raytrace/vec3.h

@@ -59,6 +59,14 @@ camera.h
 /home/haoyan/Raytrace/camera.h
 iostream
 -
+material.h
+/home/haoyan/Raytrace/material.h
+
+/home/haoyan/Raytrace/material.h
+Raytrace.h
+/home/haoyan/Raytrace/Raytrace.h
+hittable.h
+/home/haoyan/Raytrace/hittable.h
 
 /home/haoyan/Raytrace/ray.h
 vec3.h
