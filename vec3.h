@@ -68,6 +68,7 @@ vec3 random_in_unit_sphere(){
             return p;
     }
 }
+
 inline ostream& operator<<(ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
 }
@@ -110,5 +111,8 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
+}
+vec3 random_unit_vector(){
+    return unit_vector(random_in_unit_sphere());
 }
 #endif
