@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-using std::sqrt;
+using namespace std;
 
 class vec3 {
     public:
@@ -44,6 +44,14 @@ class vec3 {
         double length_squared() const {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
         }
+        
+        inline static vec3 random(){
+            return vec3(random_double(),random_double(),random_double());
+        }
+
+        inline static vec3 random(double min,double max){
+            return vec3(random_double(min,max),random_double(min,max),random_double(min,max));
+        }
 
     public:
         double e[3];
@@ -53,8 +61,14 @@ class vec3 {
 using point3 = vec3;   // 3D point
 using color = vec3;    // RGB color
 // vec3 Utility Functions
-
-inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
+vec3 random_in_unit_sphere(){
+    while (true){
+        auto p = vec3::random(-1,1);
+        if(p.length() < 1)
+            return p;
+    }
+}
+inline ostream& operator<<(ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
 }
 
