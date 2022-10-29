@@ -20,11 +20,17 @@ vec3.h
 ray.h
 /home/haoyan/Raytrace/ray.h
 
+/home/haoyan/Raytrace/camera.h
+Raytrace.h
+/home/haoyan/Raytrace/Raytrace.h
+
 /home/haoyan/Raytrace/color.h
 vec3.h
 /home/haoyan/Raytrace/vec3.h
 iostream
 -
+Raytrace.h
+/home/haoyan/Raytrace/Raytrace.h
 
 /home/haoyan/Raytrace/hittable.h
 vec3.h
@@ -49,6 +55,8 @@ sphere.h
 /home/haoyan/Raytrace/sphere.h
 hittable_list.h
 /home/haoyan/Raytrace/hittable_list.h
+camera.h
+/home/haoyan/Raytrace/camera.h
 iostream
 -
 
