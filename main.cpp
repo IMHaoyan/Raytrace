@@ -6,6 +6,17 @@
 #include <iostream>
 #include "material.h"
 using namespace std;
+// Image
+const auto aspect_ratio = 16.0 / 9.0;
+const int image_width = 600;
+const int image_height = static_cast<int>(image_width / aspect_ratio);
+const int sample_per_pixel = 10;
+const int max_depth = 50;
+//camera
+camera cam;
+//World
+hittable_list world;
+
 color ray_color(const ray& r, const hittable& world,int depth) {//the color of ray direction's screen pixel
     if(depth<=0){
         return color(0.0, 0.0, 0.0);
@@ -20,27 +31,16 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
         color attenuation;
         if (rec.mat_ptr->scatter(r,rec,attenuation,scattered)){
             return attenuation * ray_color(scattered, world, depth-1);
+                //*abs(dot(unit_vector(rec.normal),unit_vector(scattered.direction())));
         }
         return color(0,0,0);
     }
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);//map y to 0~1
     return t*color(0.5, 0.7, 1.0) + (1.0-t)*color(1.0, 1.0, 1.0);
+    //return t*color(1.0, 0.7, 0.5) + (1.0-t)*color(1.0, 1.0, 1.0);
 }
 int main() {
-
-    // Image
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 600;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int sample_per_pixel = 100;
-    const int max_depth = 50;
-    //World
-    hittable_list world;
-    
-    // world.add(make_shared<sphere>(point3(0,0,-1),0.5));
-    // world.add(make_shared<sphere>(point3(0,-100.5,-1),100));
-    
     auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
     auto material_center = make_shared<lambertian>(color(0.7, 0.3, 0.3));
     auto material_left   = make_shared<metal>(color(0.8, 0.8, 0.8));
@@ -48,12 +48,12 @@ int main() {
 
     world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
     world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
-    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
-    world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
-    //camera
-    camera cam;
+    //world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
+    //world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
+
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+
     for (int j = image_height-1; j >= 0; --j) {
         cerr << "\rcurrent: " <<100.f*(image_height-j)/(image_height)<<"%"<< flush;
         for (int i = 0; i < image_width; ++i) {
@@ -68,5 +68,6 @@ int main() {
             write_color(cout, pixel_color,sample_per_pixel);
         }
     }
+
     cerr << "\nDone.\n";
 }

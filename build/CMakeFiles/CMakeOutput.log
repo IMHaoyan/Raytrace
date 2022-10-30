@@ -1774,3 +1774,19 @@ Parsed CXX implicit link information from above output:
   implicit fwks: []
 
 
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/haoyan/Raytrace/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_3b769 && [1/2] Building C object CMakeFiles/cmTC_3b769.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_3b769
+
+
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/haoyan/Raytrace/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_62fba && [1/2] Building C object CMakeFiles/cmTC_62fba.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_62fba
+
+
+
