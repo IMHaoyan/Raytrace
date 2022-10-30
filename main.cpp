@@ -19,6 +19,7 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);//map y to 0~1
     return t*color(0.5, 0.7, 1.0) + (1.0-t)*color(1.0, 1.0, 1.0);
+    //return color(1,0,0);
 }
 int main() {
 
@@ -26,8 +27,8 @@ int main() {
     const auto aspect_ratio = 16.0 / 9.0;
     const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int sample_per_pixel = 100;
-    const int max_depth = 50;
+    const int sample_per_pixel = 10;
+    const int max_depth = 2;
     //World
     hittable_list world;
     world.add(make_shared<sphere>(point3(0,0,-1),0.5));
