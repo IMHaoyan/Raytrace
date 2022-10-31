@@ -51,10 +51,10 @@ Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 color.h
 /home/haoyan/Raytrace/color.h
-moving_sphere.h
-/home/haoyan/Raytrace/moving_sphere.h
 sphere.h
 /home/haoyan/Raytrace/sphere.h
+moving_sphere.h
+/home/haoyan/Raytrace/moving_sphere.h
 hittable_list.h
 /home/haoyan/Raytrace/hittable_list.h
 camera.h
