@@ -3,10 +3,44 @@
 #include "Raytrace.h"
 #include "hittable.h"
 struct hit_record;
+//material可以由入射处信息确定 衰减率，反射方向
 class material{
     public:
         virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
             ray& scattered) const = 0;
+};
+
+class lambertian : public material{
+    public:
+        color albedo;
+    public:
+        lambertian(const color& a): albedo(a){}
+        virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
+            ray& scattered) const override{
+            auto scatter_direction = rec.normal + random_unit_vector();
+            if(scatter_direction.near_zero()){
+                scatter_direction = rec.normal;
+            }
+            scattered = ray(rec.p, scatter_direction, r_in.time());
+            attenuation = albedo; //衰减率attenuation
+            return true;
+        }
+};
+
+class metal : public material{
+    public:
+        color albedo;
+        double fuzz;
+    public:
+        metal(const color& a) : albedo(a) {fuzz=0;}
+        metal(const color& a, double f) : albedo(a), fuzz(f < 1 ? f : 1) {}
+        virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
+            ray& scattered) const override{
+            auto reflected = reflect(unit_vector(r_in.direction()), rec.normal);
+            scattered = ray(rec.p, reflected + fuzz*random_in_unit_sphere(), r_in.time());
+            attenuation = albedo;   //衰减率attenuation
+            return dot(scattered.direction(),rec.normal)>0;
+        }
 };
 
 class dielectric : public material {
@@ -26,10 +60,10 @@ class dielectric : public material {
 
             if (cannot_refract||reflectance(cos_theta, refraction_ratio) > random_double()){
                 direction = reflect(unit_direction, rec.normal);
-            }
+            }//光路不是可逆吗 为什么对于球体 可以有cannot_refract的情况
             else
                 direction = refract(unit_direction, rec.normal, refraction_ratio);
-            scattered = ray(rec.p, direction);
+            scattered = ray(rec.p, direction, r_in.time());
             return true;
         }
     private:
@@ -41,36 +75,4 @@ class dielectric : public material {
         }
 };
 
-//material可以由入射处信息确定 衰减率，反射方向
-class lambertian : public material{
-    public:
-        color albedo;
-    public:
-        lambertian(const color& a): albedo(a){}
-        virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
-            ray& scattered) const override{
-            auto scatter_direction = rec.normal + random_unit_vector();
-            if(scatter_direction.near_zero()){
-                scatter_direction = rec.normal;
-            }
-            scattered = ray(rec.p, scatter_direction);
-            attenuation = albedo; //衰减率attenuation
-            return true;
-        }
-};
-class metal : public material{
-    public:
-        color albedo;
-        double fuzz;
-    public:
-        metal(const color& a) : albedo(a) {fuzz=0;}
-        metal(const color& a, double f) : albedo(a), fuzz(f < 1 ? f : 1) {}
-        virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
-            ray& scattered) const override{
-            auto reflected = reflect(unit_vector(r_in.direction()), rec.normal);
-            scattered = ray(rec.p, reflected + fuzz*random_in_unit_sphere());
-            attenuation = albedo; //衰减率attenuation
-            return dot(scattered.direction(),rec.normal)>0;
-        }
-};
 #endif

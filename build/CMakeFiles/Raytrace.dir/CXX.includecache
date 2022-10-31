@@ -51,6 +51,8 @@ Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 color.h
 /home/haoyan/Raytrace/color.h
+moving_sphere.h
+/home/haoyan/Raytrace/moving_sphere.h
 sphere.h
 /home/haoyan/Raytrace/sphere.h
 hittable_list.h
@@ -63,6 +65,12 @@ material.h
 /home/haoyan/Raytrace/material.h
 
 /home/haoyan/Raytrace/material.h
+Raytrace.h
+/home/haoyan/Raytrace/Raytrace.h
+hittable.h
+/home/haoyan/Raytrace/hittable.h
+
+/home/haoyan/Raytrace/moving_sphere.h
 Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 hittable.h
