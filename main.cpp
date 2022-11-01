@@ -57,7 +57,7 @@ hittable_list random_scene() {
     auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
     //return world;
-    return hittable_list(make_shared<bvh_node>(world,0,1));
+    return hittable_list(make_shared<bvh_node>(world));//动态模糊请加time0，time1的实参 参考33行
 }
 
 color ray_color(const ray& r, const hittable& world,int depth) {//the color of ray direction's screen pixel
@@ -75,7 +75,6 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
         if (rec.mat_ptr->scatter(r,rec,attenuation,scattered)){
             //return 0.5*color(unit_vector(scattered.direction()) + color(1,1,1));
             return attenuation * ray_color(scattered, world, depth-1);
-                //*abs(dot(unit_vector(rec.normal),unit_vector(scattered.direction())));
         }else{
             return color(0,0,0);//absorbed
         }
@@ -84,7 +83,6 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
         vec3 unit_direction = unit_vector(r.direction());
         auto t = 0.5*(unit_direction.y() + 1.0);//map y to 0~1
         return t*color(0.5, 0.7, 1.0) + (1.0-t)*color(1.0, 1.0, 1.0);
-        //return t*color(1.0, 0.7, 0.5) + (1.0-t)*color(1.0, 1.0, 1.0);
     }
 }
 
