@@ -60,5 +60,6 @@ bool moving_sphere::bounding_box(double time0, double time1, aabb& output_box) c
         center(time1) + vec3(radius, radius, radius)
     );
     output_box = surrounding_box(box0, box1);
+    return true;
 }
 #endif

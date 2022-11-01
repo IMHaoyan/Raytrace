@@ -6,11 +6,13 @@
 #include "camera.h"
 #include <iostream>
 #include "material.h"
+#include "bvh.h"
+#include <ctime>
+#include<iomanip>
 using namespace std;
 
 hittable_list random_scene() {
     hittable_list world;
-
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
     world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
 
@@ -26,9 +28,11 @@ hittable_list random_scene() {
                     // diffuse
                     auto albedo = color::random() * color::random();
                     sphere_material = make_shared<lambertian>(albedo);
-                    auto center2 = center + vec3(0, random_double(0,.5), 0);
-                    world.add(make_shared<moving_sphere>(
-                        center, center2, 0.0, 1.0, 0.2, sphere_material));
+                    //auto center2 = center + vec3(0, random_double(0,.5), 0);
+                    // world.add(make_shared<moving_sphere>(
+                    //     center, center2, 0.0, 1.0, 0.2, sphere_material));
+                    world.add(make_shared<sphere>(
+                        center, 0.2, sphere_material));
                 } else if (choose_mat < 0.95) {
                     // metal
                     auto albedo = color::random(0.5, 1);
@@ -52,8 +56,8 @@ hittable_list random_scene() {
 
     auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
-
-    return world;
+    //return world;
+    return hittable_list(make_shared<bvh_node>(world,0,1));
 }
 
 color ray_color(const ray& r, const hittable& world,int depth) {//the color of ray direction's screen pixel
@@ -86,9 +90,9 @@ color ray_color(const ray& r, const hittable& world,int depth) {//the color of r
 
 int main() {
     // Image
-    auto aspect_ratio = 16.0 / 9.0;
-    int image_width = 400;
-    int samples_per_pixel = 100;
+    auto aspect_ratio = 3.0 / 2.0;
+    int image_width = 240;
+    int samples_per_pixel = 50;
     const int max_depth = 50;
 
     // World
@@ -101,13 +105,13 @@ int main() {
     auto dist_to_focus = 10.0;
     auto aperture = 0.1;
     int image_height = static_cast<int>(image_width / aspect_ratio);
-    
     camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
-
+    
+    clock_t begin = clock(), end;
     for (int j = image_height-1; j >= 0; --j) {
-        cerr << "\rcurrent: " <<100.f*(image_height-j)/(image_height)<<"%"<< flush;
+        end = clock();
         for (int i = 0; i < image_width; ++i) {
             color pixel_color(0,0,0);
             for (int s = 0; s < samples_per_pixel; s++)
@@ -116,10 +120,12 @@ int main() {
                 auto v = (j + random_double()) / (image_height-1);
                 ray r = cam.get_ray(u,v);
                 pixel_color += ray_color(r,world,max_depth);
+                cerr << "\rcurrent: " <<fixed<<setprecision(2)<<100.0*(image_height-j)/(image_height)<<"%   "
+                    <<"Time past: "<<fixed<<setprecision(3)<<double(end-begin)/1000000<<" s"<<flush;
             }
             write_color(cout, pixel_color,samples_per_pixel);
         }
     }
-
-    cerr << "\nDone.\n";
+    cerr << "\nDone.\n\n";
+    return 0;
 }

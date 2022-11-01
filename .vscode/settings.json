@@ -45,6 +45,7 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "raytrace": "cpp"
+        "raytrace": "cpp",
+        "iomanip": "cpp"
     }
 }
