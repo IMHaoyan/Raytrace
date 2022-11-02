@@ -12,5 +12,6 @@ CMakeFiles/Raytrace.dir/main.cpp.o: ../main.cpp
 CMakeFiles/Raytrace.dir/main.cpp.o: ../material.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../ray.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../sphere.h
+CMakeFiles/Raytrace.dir/main.cpp.o: ../texture.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../vec3.h
 
