@@ -21,7 +21,7 @@ class lambertian : public material{
             if(scatter_direction.near_zero()){
                 scatter_direction = rec.normal;
             }
-            scattered = ray(rec.p, scatter_direction, r_in.time());
+            scattered = ray(rec.p, scatter_direction);
             attenuation = albedo; //衰减率attenuation
             return true;
         }
@@ -37,7 +37,7 @@ class metal : public material{
         virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
             ray& scattered) const override{
             auto reflected = reflect(unit_vector(r_in.direction()), rec.normal);
-            scattered = ray(rec.p, reflected + fuzz*random_in_unit_sphere(), r_in.time());
+            scattered = ray(rec.p, reflected + fuzz*random_in_unit_sphere());
             attenuation = albedo;   //衰减率attenuation
             return dot(scattered.direction(),rec.normal)>0;
         }
@@ -63,7 +63,7 @@ class dielectric : public material {
             }//光路不是可逆吗 为什么对于球体 可以有cannot_refract的情况
             else
                 direction = refract(unit_direction, rec.normal, refraction_ratio);
-            scattered = ray(rec.p, direction, r_in.time());
+            scattered = ray(rec.p, direction);
             return true;
         }
     private:
