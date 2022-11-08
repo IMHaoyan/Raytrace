@@ -64,14 +64,6 @@ class vec3 {
 // Type aliases for vec3
 using point3 = vec3;   // 3D point
 using color = vec3;    // RGB color
-// vec3 Utility Functions
-vec3 random_in_unit_sphere(){//sample in the whole sphere
-    while (true){
-        auto p = vec3::random(-1,1);
-        if(p.length() < 1)
-            return p;
-    }
-}
 
 inline ostream& operator<<(ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
@@ -115,6 +107,14 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
+}
+// vec3 Utility Functions
+vec3 random_in_unit_sphere(){//sample in the whole sphere
+    while (true){
+        auto p = vec3::random(-1,1);
+        if(p.length() < 1)
+            return p;
+    }
 }
 vec3 random_unit_vector(){//sample in the sphere surface
     return unit_vector(random_in_unit_sphere());
