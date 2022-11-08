@@ -7,6 +7,7 @@ CMakeFiles/Raytrace.dir/main.cpp.o
  /home/haoyan/Raytrace/bvh.h
  /home/haoyan/Raytrace/camera.h
  /home/haoyan/Raytrace/color.h
+ /home/haoyan/Raytrace/head.h
  /home/haoyan/Raytrace/hittable.h
  /home/haoyan/Raytrace/hittable_list.h
  /home/haoyan/Raytrace/main.cpp

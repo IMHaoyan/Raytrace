@@ -6,6 +6,7 @@ CMakeFiles/Raytrace.dir/main.cpp.o: ../aabb.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../bvh.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../camera.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../color.h
+CMakeFiles/Raytrace.dir/main.cpp.o: ../head.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../hittable.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../hittable_list.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../main.cpp

@@ -46,6 +46,9 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "raytrace": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "chrono": "cpp",
+        "thread": "cpp",
+        "condition_variable": "cpp"
     }
 }
