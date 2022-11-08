@@ -7,8 +7,6 @@ struct hit_record;
 //material可以由入射处信息确定 衰减率，反射方向
 class material{
     public:
-        double pdf = 1.0;
-    public:
         virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
             ray& scattered) const = 0;
         virtual color emitted(double u, double v, const point3& p) const {
@@ -52,8 +50,8 @@ class diffuse : public material{
     public:
         shared_ptr<texture> albedo;
     public:
-        diffuse(const color& a): albedo(make_shared<solid_color>(a)){pdf = 0.5/pi;}
-        diffuse(shared_ptr<texture> a) : albedo(a){pdf = 0.5/pi;}
+        diffuse(const color& a): albedo(make_shared<solid_color>(a)){}
+        diffuse(shared_ptr<texture> a) : albedo(a){}
 
         virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
             ray& scattered) const override{
@@ -62,8 +60,7 @@ class diffuse : public material{
                 scatter_direction = rec.normal;
             }
             scattered = ray(rec.p, scatter_direction);
-            //attenuation = albedo->value(rec.u, rec.v, rec.p);
-            attenuation = albedo->value(0,0,vec3(0,0,0)) / pi;
+            attenuation = albedo->value(rec.u, rec.v, rec.p);
             return true;
         }
 };
