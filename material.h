@@ -48,7 +48,25 @@ class lambertian : public material{
             return true;
         }
 };
+class diffuse : public material{
+    public:
+        shared_ptr<texture> albedo;
+    public:
+        diffuse(const color& a): albedo(make_shared<solid_color>(a)){pdf = 0.5/pi;}
+        diffuse(shared_ptr<texture> a) : albedo(a){pdf = 0.5/pi;}
 
+        virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
+            ray& scattered) const override{
+            auto scatter_direction = rec.normal + random_unit_vector();
+            if(scatter_direction.near_zero()){
+                scatter_direction = rec.normal;
+            }
+            scattered = ray(rec.p, scatter_direction);
+            //attenuation = albedo->value(rec.u, rec.v, rec.p);
+            attenuation = albedo->value(0,0,vec3(0,0,0)) / pi;
+            return true;
+        }
+};
 class metal : public material{
     public:
         color albedo;

@@ -52,15 +52,14 @@ hittable_list random_scene() {
     //     }
     // }
 
-    auto material1 = make_shared<dielectric>(1.5);
+    //auto material1 = make_shared<dielectric>(1.5);
     //world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material1));
 
     auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
     world.add(make_shared<sphere>(point3(-3.5, 1.3, 0), 1.3, material2));
 
-    //auto material3 = make_shared<diffuse>(color(0.4, 0.2, 0.1), 0.1);
-    //world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material3));
-    // return world;
+    auto material3 = make_shared<diffuse>(color(0.4, 0.2, 0.1));
+    world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material3));
     return hittable_list(make_shared<bvh_node>(
         world));  // 动态模糊请加time0，time1的实参 参考33行
 }
