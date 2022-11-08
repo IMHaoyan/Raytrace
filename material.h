@@ -7,6 +7,8 @@ struct hit_record;
 //material可以由入射处信息确定 衰减率，反射方向
 class material{
     public:
+        double pdf = 1.0;
+    public:
         virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation, 
             ray& scattered) const = 0;
         virtual color emitted(double u, double v, const point3& p) const {

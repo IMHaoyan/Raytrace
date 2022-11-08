@@ -53,13 +53,13 @@ hittable_list random_scene() {
     // }
 
     auto material1 = make_shared<dielectric>(1.5);
-    world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material1));
+    //world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material1));
 
     auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
     world.add(make_shared<sphere>(point3(-3.5, 1.3, 0), 1.3, material2));
 
-    auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
-    world.add(make_shared<sphere>(point3(3, 1.3, 0), 1.3, material3));
+    //auto material3 = make_shared<diffuse>(color(0.4, 0.2, 0.1), 0.1);
+    //world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material3));
     // return world;
     return hittable_list(make_shared<bvh_node>(
         world));  // 动态模糊请加time0，time1的实参 参考33行
@@ -78,11 +78,13 @@ color ray_color(const ray& r, const hittable& world, int depth) {
         ray scattered;
         color attenuation;
         if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
-            return attenuation * ray_color(scattered, world, depth - 1) / RR;
+            return attenuation * ray_color(scattered, world, depth - 1) 
+                    * dot(unit_vector(scattered.direction()) , unit_vector(rec.normal)) 
+                    / RR ;
         } else {
             return color(0, 0, 0);  // absorbed
         }
-    } else {
+    } else {//background
         vec3 unit_direction = unit_vector(r.direction());
         auto t = 0.5 * (unit_direction.y() + 1.0);
         return t * color(0.5, 0.7, 1.0) + (1.0 - t) * color(1.0, 1.0, 1.0);
