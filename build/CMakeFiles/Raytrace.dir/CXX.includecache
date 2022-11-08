@@ -85,6 +85,10 @@ ctime
 -
 iomanip
 -
+thread
+-
+mutex
+-
 
 /home/haoyan/Raytrace/material.h
 Raytrace.h

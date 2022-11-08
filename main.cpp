@@ -9,6 +9,10 @@
 #include "bvh.h"
 #include <ctime>
 #include<iomanip>
+#include <thread>
+#include <mutex>
+std::mutex mtx;
+int progress = 0;
 using namespace std;
 
 hittable_list random_scene() {
@@ -134,25 +138,67 @@ int main() {
     
     camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
+
     // Render
+
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     clock_t begin = clock(), end;
-    for (int j = image_height-1; j >= 0; --j) {
-        end = clock();
-        for (int i = 0; i < image_width; ++i) {
-            color pixel_color(0,0,0);
-            for (int s = 0; s < samples_per_pixel; s++)
-            {
-                auto u = (i + random_double()) / (image_width-1);
-                auto v = (j + random_double()) / (image_height-1);
-                ray r = cam.get_ray(u,v);
-                pixel_color += ray_color(r,world,max_depth);
-                cerr << "\rcurrent: " <<fixed<<setprecision(2)<<100.0*(image_height-j)/(image_height)<<"%   "
-                    <<"Time past: "<<fixed<<setprecision(3)<<double(end-begin)/1000000<<" s"<<flush;
+
+    vector<color> framebuffer(image_height *image_width);
+    int num_threads = 16;
+    thread th[num_threads];
+    int thread_height = image_height/num_threads;
+    cerr<<"begin\n";
+    auto renderRows = [&](int start_height, int end_height) {
+        for (int j = start_height; j < end_height; ++j) {
+            end = clock();cerr<<"ok\n";
+            for (int i = 0; i < image_width; ++i) {
+                color pixel_color(0, 0, 0);
+                for (int s = 0; s < samples_per_pixel; s++) {
+                    auto u = (i + random_double()) / (image_width - 1);
+                    auto v = (j + random_double()) / (image_height - 1);
+                    ray r = cam.get_ray(u, v);
+                    pixel_color += ray_color(r, world, max_depth); 
+                }
+                //write_color(cout, pixel_color, samples_per_pixel);
+                framebuffer[j*image_width+i] = pixel_color;
             }
-            write_color(cout, pixel_color,samples_per_pixel);
+            mtx.lock();
+            progress++;
+            cerr << "\rcurrent: " << fixed << setprecision(2)
+                         << 100.0 * (progress) / (image_height)
+                         << "%   "
+                         << "Time past: " << fixed << setprecision(3)
+                         << double(end - begin) / 1000000 << " s" << flush;
+            mtx.unlock();
         }
+    };
+    for (int t = 0; t < num_threads; ++t) {
+        th[t] = thread(renderRows, t*thread_height, (t+1)*thread_height);
     }
-    cerr << "\nDone.\n\n";
+    for (int t = 0; t < num_threads; ++t) {
+        th[t].join();
+    }
+    int buffer_size = image_width * image_height;
+    for (auto i = 0; i < buffer_size; ++i) {
+        write_color(cout, framebuffer[buffer_size-1-i],1.0);
+    }
+    // for (int j = image_height-1; j >= 0; --j) {
+    //     end = clock();
+    //     for (int i = 0; i < image_width; ++i) {
+    //         color pixel_color(0,0,0);
+    //         for (int s = 0; s < samples_per_pixel; s++)
+    //         {
+    //             auto u = (i + random_double()) / (image_width-1);
+    //             auto v = (j + random_double()) / (image_height-1);
+    //             ray r = cam.get_ray(u,v);
+    //             pixel_color += ray_color(r,world,max_depth);
+    //             cerr << "\rcurrent: " <<fixed<<setprecision(2)<<100.0*(image_height-j)/(image_height)<<"%   "
+    //                 <<"Time past: "<<fixed<<setprecision(3)<<double(end-begin)/1000000<<" s"<<flush;
+    //         }
+    //         write_color(cout, pixel_color,samples_per_pixel);
+    //     }
+    // }
+    cerr << "Done.\n";
     return 0;
 }
