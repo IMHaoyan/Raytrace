@@ -61,7 +61,7 @@ hittable_list random_scene() {
     auto Diffuse = make_shared<diffuse>(color(0.4, 0.2, 0.1));
     world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, Diffuse));
     return hittable_list(make_shared<bvh_node>(
-        world));  // 动态模糊请加time0，time1的实参 参考33行
+        world));
 }
 
 color ray_color(const ray& r, const hittable& world, int depth) {
