@@ -4,6 +4,7 @@
 CMakeFiles/Raytrace.dir/main.cpp.o: ../Raytrace.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../aabb.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../aarect.h
+CMakeFiles/Raytrace.dir/main.cpp.o: ../box.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../bvh.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../camera.h
 CMakeFiles/Raytrace.dir/main.cpp.o: ../color.h

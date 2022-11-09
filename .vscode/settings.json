@@ -49,6 +49,10 @@
         "iomanip": "cpp",
         "chrono": "cpp",
         "thread": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "mutex": "cpp"
     }
 }

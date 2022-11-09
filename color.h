@@ -2,9 +2,7 @@
 #define COLOR_H
 
 #include "vec3.h"
-
 #include <iostream>
-#include "Raytrace.h"
 
 void write_color(std::ostream &out, color pixel_color,int sample_per_pixel) {
     auto scale = 1.0/sample_per_pixel;

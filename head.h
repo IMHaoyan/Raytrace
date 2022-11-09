@@ -14,7 +14,7 @@
 #include "material.h"
 #include "bvh.h"
 #include "aarect.h"
-
+#include "box.h"
 string timeToString(std::chrono::system_clock::time_point &t)
 {
     std::time_t time = std::chrono::system_clock::to_time_t(t);

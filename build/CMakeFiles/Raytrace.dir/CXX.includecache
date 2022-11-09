@@ -30,6 +30,12 @@ Raytrace.h
 hittable.h
 /home/haoyan/Raytrace/hittable.h
 
+/home/haoyan/Raytrace/box.h
+aarect.h
+/home/haoyan/Raytrace/aarect.h
+hittable_list.h
+/home/haoyan/Raytrace/hittable_list.h
+
 /home/haoyan/Raytrace/bvh.h
 Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
@@ -49,8 +55,6 @@ vec3.h
 /home/haoyan/Raytrace/vec3.h
 iostream
 -
-Raytrace.h
-/home/haoyan/Raytrace/Raytrace.h
 
 /home/haoyan/Raytrace/head.h
 iomanip
@@ -79,10 +83,10 @@ bvh.h
 /home/haoyan/Raytrace/bvh.h
 aarect.h
 /home/haoyan/Raytrace/aarect.h
+box.h
+/home/haoyan/Raytrace/box.h
 
 /home/haoyan/Raytrace/hittable.h
-vec3.h
-/home/haoyan/Raytrace/vec3.h
 ray.h
 /home/haoyan/Raytrace/ray.h
 aabb.h
