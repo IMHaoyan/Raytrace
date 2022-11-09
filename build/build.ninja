@@ -63,7 +63,7 @@ build cmake_object_order_depends_target_Raytrace: phony || CMakeFiles/Raytrace.d
 
 build CMakeFiles/Raytrace.dir/main.cpp.o: CXX_COMPILER__Raytrace ../main.cpp || cmake_object_order_depends_target_Raytrace
   DEP_FILE = CMakeFiles/Raytrace.dir/main.cpp.o.d
-  FLAGS = -g
+  FLAGS = -g   -std=gnu++17
   OBJECT_DIR = CMakeFiles/Raytrace.dir
   OBJECT_FILE_DIR = CMakeFiles/Raytrace.dir
 

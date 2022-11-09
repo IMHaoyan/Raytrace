@@ -36,6 +36,9 @@
 			[
 				{
 					"fragment" : "-g  "
+				},
+				{
+					"fragment" : "-std=gnu++17"
 				}
 			],
 			"language" : "CXX",

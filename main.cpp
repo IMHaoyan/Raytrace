@@ -5,26 +5,26 @@ hittable_list random_scene();
 hittable_list simple_light_scene();
 hittable_list cornell_box();
 
-int image_height = 300;
-int samples_per_pixel = 10;
+int image_height = 500;
+int samples_per_pixel = 200;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
 const int num_threads = 10;
-color background = color(0,0,0);
+color background = color(0, 0, 0);
 // World
 
 hittable_list world = cornell_box();
 
 auto aperture = 0.0;
-auto lookfrom = point3(278, 278, 800);
+auto lookfrom = point3(278, 278, -800);
 auto lookat = point3(278, 278, 0);
 auto vfov = 40.0;
 
 hittable_list random_scene() {
     hittable_list world;
-    auto checker = make_shared<lambertian>(make_shared<checker_texture>(
-        color(0.2, 0.3, 0.1), color(0.9, 0.9, 0.9)));
+    auto checker = make_shared<lambertian>(
+        make_shared<checker_texture>(color(0.2, 0.3, 0.1), color(0.9, 0.9, 0.9)));
     world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, checker));
 
     // for (int x = -10; x <= 2; x += 2) {
@@ -72,11 +72,11 @@ hittable_list random_scene() {
 hittable_list simple_light_scene() {
     hittable_list objects;
 
-    auto Diffuse = make_shared<diffuse>(color(1,1,1));
-    objects.add(make_shared<sphere>(point3(0,-1000,0), 1000, Diffuse));
-    objects.add(make_shared<sphere>(point3(0,2,0), 2, Diffuse));
+    auto Diffuse = make_shared<diffuse>(color(1, 1, 1));
+    objects.add(make_shared<sphere>(point3(0, -1000, 0), 1000, Diffuse));
+    objects.add(make_shared<sphere>(point3(0, 2, 0), 2, Diffuse));
 
-    auto difflight = make_shared<diffuse_light>(color(4,4,4));
+    auto difflight = make_shared<diffuse_light>(color(4, 4, 4));
     objects.add(make_shared<xy_rect>(3, 5, 1, 3, -2, difflight));
 
     return objects;
@@ -90,26 +90,35 @@ hittable_list cornell_box() {
     auto green = make_shared<lambertian>(color(.12, .45, .15));
     auto light = make_shared<diffuse_light>(color(15, 15, 15));
 
-    objects.add(make_shared<yz_rect>(0, 555, -555, 0, 0, green));
-    objects.add(make_shared<yz_rect>(0, 555, -555, 0, 555, red));
-    objects.add(make_shared<xz_rect>(213, 343, -332, -227, 554, light));
-    objects.add(make_shared<xz_rect>(0, 555, -555, 0, 0, white));
-    objects.add(make_shared<xz_rect>(0, 555, -555, 0, 555, white));
-    objects.add(make_shared<xy_rect>(0, 555, 0, 555, -555, white));
+    objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
+    objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
+    objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
+    objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
+    objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
     auto Metal = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     auto Diffuse = make_shared<diffuse>(color(1.00, 0.71, 0.29));
 
-    //objects.add(make_shared<sphere>(point3(222,150,-333), 150, Metal));
-    // objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
-    
-    objects.add(make_shared<box>(point3(260, 0, -230), point3(425, 165, -65), white));
-    objects.add(make_shared<box>(point3(125, 0, -460), point3(290,330,-295), white));
+    // objects.add(make_shared<sphere>(point3(222,150,-333), 150, Metal));
+    //  objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
+
+    shared_ptr<hittable> box1 =
+        make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
+    box1 = make_shared<rotate_y>(box1, 15);
+    box1 = make_shared<translate>(box1, vec3(265, 0, 295));
+    objects.add(box1);
+
+    shared_ptr<hittable> box2 =
+        make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
+    box2 = make_shared<rotate_y>(box2, -18);
+    box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+    objects.add(box2);
+
     return objects;
 }
 
-color ray_color(const ray &r, const color &background, const hittable &world,
-                int depth) {
+color ray_color(const ray &r, const color &background, const hittable &world, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
         RR = 0.8;
@@ -127,10 +136,11 @@ color ray_color(const ray &r, const color &background, const hittable &world,
 
     if (!rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
         return emit;
-    }else{
-        return emit + attenuation * ray_color(scattered, background, world, depth - 1) 
-                * dot(unit_vector(scattered.direction()), unit_vector(rec.normal)) 
-                / rec.mat_ptr->pdf() / RR;
+    } else {
+        return emit +
+               attenuation * ray_color(scattered, background, world, depth - 1) *
+                   dot(unit_vector(scattered.direction()), unit_vector(rec.normal)) /
+                   rec.mat_ptr->pdf() / RR;
     }
     // vec3 unit_direction = unit_vector(r.direction());
     // auto t = 0.5 * (unit_direction.y() + 1.0);
@@ -144,8 +154,7 @@ int main() {
 
     auto aperture = 0.0;
     int image_width = static_cast<int>(image_height * aspect_ratio);
-    camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture,
-               dist_to_focus);
+    camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
@@ -170,16 +179,15 @@ int main() {
                     pixel_color +=
                         ray_color(r, background, world, max_depth) / samples_per_pixel;
                 }
-                framebuffer[j * image_width + image_width - 1 - i] =
-                    pixel_color;
+                framebuffer[j * image_width + image_width - 1 - i] = pixel_color;
             }
             mtx.lock();
             progress++;
             diff = end - begin;
             cerr << "\rcurrent: " << fixed << setprecision(2)
                  << 100.0 * (progress) / (image_height) << "%   "
-                 << "Time past: " << fixed << setprecision(3) << diff.count()
-                 << " s" << flush;
+                 << "Time past: " << fixed << setprecision(3) << diff.count() << " s"
+                 << flush;
             mtx.unlock();
         }
     };

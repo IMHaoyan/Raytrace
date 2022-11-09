@@ -87,10 +87,10 @@ box.h
 /home/haoyan/Raytrace/box.h
 
 /home/haoyan/Raytrace/hittable.h
-ray.h
-/home/haoyan/Raytrace/ray.h
 aabb.h
 /home/haoyan/Raytrace/aabb.h
+ray.h
+/home/haoyan/Raytrace/ray.h
 
 /home/haoyan/Raytrace/hittable_list.h
 hittable.h
