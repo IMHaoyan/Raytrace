@@ -4,22 +4,25 @@ using namespace std::chrono;
 hittable_list random_scene();
 hittable_list simple_light_scene();
 hittable_list cornell_box();
-
+hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 200;
+int samples_per_pixel = 20;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
 const int num_threads = 10;
 color background = color(0, 0, 0);
+auto aperture = 0.0;
+auto vfov = 40.0;
 // World
 
-hittable_list world = cornell_box();
 
-auto aperture = 0.0;
-auto lookfrom = point3(278, 278, -800);
+// hittable_list world = cornell_box();
+// auto lookfrom = point3(278, 278, -800);
+// auto lookat = point3(278, 278, 0);
+hittable_list world = final();
+auto lookfrom = point3(478, 278, -600);
 auto lookat = point3(278, 278, 0);
-auto vfov = 40.0;
 
 hittable_list random_scene() {
     hittable_list world;
@@ -114,6 +117,57 @@ hittable_list cornell_box() {
     box2 = make_shared<rotate_y>(box2, -18);
     box2 = make_shared<translate>(box2, vec3(130, 0, 65));
     objects.add(box2);
+
+    return objects;
+}
+
+hittable_list final() {
+    hittable_list boxes1;
+    auto ground = make_shared<lambertian>(color(0.48, 0.83, 0.53));
+
+    const int boxes_per_side = 20;
+    for (int i = 0; i < boxes_per_side; i++) {
+        for (int j = 0; j < boxes_per_side; j++) {
+            auto w = 100.0;
+            auto x0 = -1000.0 + i*w;
+            auto z0 = -1000.0 + j*w;
+            auto y0 = 0.0;
+            auto x1 = x0 + w;
+            auto y1 = random_double(1,101);
+            auto z1 = z0 + w;
+
+            boxes1.add(make_shared<box>(point3(x0,y0,z0), point3(x1,y1,z1), ground));
+        }
+    }
+
+    hittable_list objects;
+
+    objects.add(make_shared<bvh_node>(boxes1));
+
+    auto light = make_shared<diffuse_light>(color(7, 7, 7));
+    objects.add(make_shared<xz_rect>(123, 423, 147, 412, 554, light));
+   
+    objects.add(make_shared<sphere>(point3(260, 150, 45), 50, make_shared<dielectric>(1.5)));
+    objects.add(make_shared<sphere>(
+        point3(0, 150, 145), 50, make_shared<metal>(color(0.8, 0.8, 0.9), 1.0)
+    ));
+
+    auto emat = make_shared<diffuse>(color(color(1.00, 0.71, 0.29)));
+    objects.add(make_shared<sphere>(point3(400,200,400), 100, emat));
+    
+    hittable_list boxes2;
+    auto white = make_shared<lambertian>(color(.73, .73, .73));
+    int ns = 1000;
+    for (int j = 0; j < ns; j++) {
+        boxes2.add(make_shared<sphere>(point3::random(0,165), 10, white));
+    }
+
+    objects.add(make_shared<translate>(
+        make_shared<rotate_y>(
+            make_shared<bvh_node>(boxes2), 15),
+            vec3(-100,270,395)
+        )
+    );
 
     return objects;
 }
