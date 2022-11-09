@@ -2,20 +2,23 @@
 using namespace std;
 using namespace std::chrono;
 hittable_list random_scene();
+hittable_list simple_light_scene();
 
 auto aspect_ratio = 16.0 / 9.0;
 int image_height = 360;
-int samples_per_pixel = 10;
+int samples_per_pixel = 400;
 const int max_depth = 5;
 const int num_threads = 18;
 
 // World
 color background = color(0,0,0);
-hittable_list world = random_scene();
-point3 lookfrom = point3(6, 4, 12);
-point3 lookat = point3(0, 1, 0);
+hittable_list world = simple_light_scene();
+// point3 lookfrom = point3(6, 4, 12);
+// point3 lookat = point3(0, 1, 0);
 auto vfov = 20.0;
 auto aperture = 0.0;
+auto lookfrom = point3(26,3,6);
+auto lookat = point3(0,2,0);
 
 hittable_list random_scene() {
     hittable_list world;
@@ -63,6 +66,19 @@ hittable_list random_scene() {
     world.add(make_shared<sphere>(point3(3, 1.3, 0), 1.3, MatLambertian));
 
     return hittable_list(make_shared<bvh_node>(world));
+}
+
+hittable_list simple_light_scene() {
+    hittable_list objects;
+
+    auto Diffuse = make_shared<diffuse>(color(1,1,1)*4);
+    objects.add(make_shared<sphere>(point3(0,-1000,0), 1000, Diffuse));
+    objects.add(make_shared<sphere>(point3(0,2,0), 2, Diffuse));
+
+    auto difflight = make_shared<diffuse_light>(color(4,4,4));
+    objects.add(make_shared<xy_rect>(3, 5, 1, 3, -2, difflight));
+
+    return objects;
 }
 
 color ray_color(const ray &r, const color &background, const hittable &world,

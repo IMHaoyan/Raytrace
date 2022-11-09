@@ -1,6 +1,9 @@
 #ifndef HEAD_H
 #define HEAD_H
 
+#include<iomanip>
+#include <thread>
+#include <mutex>
 #include "Raytrace.h"
 #include "color.h"
 #include "sphere.h"
@@ -10,9 +13,7 @@
 #include <iostream>
 #include "material.h"
 #include "bvh.h"
-#include<iomanip>
-#include <thread>
-#include <mutex>
+#include "aarect.h"
 
 string timeToString(std::chrono::system_clock::time_point &t)
 {

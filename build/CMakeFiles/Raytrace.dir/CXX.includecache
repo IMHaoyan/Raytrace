@@ -24,6 +24,12 @@ ray.h
 Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 
+/home/haoyan/Raytrace/aarect.h
+Raytrace.h
+/home/haoyan/Raytrace/Raytrace.h
+hittable.h
+/home/haoyan/Raytrace/hittable.h
+
 /home/haoyan/Raytrace/bvh.h
 Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
@@ -47,6 +53,12 @@ Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 
 /home/haoyan/Raytrace/head.h
+iomanip
+-
+thread
+-
+mutex
+-
 Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 color.h
@@ -65,12 +77,8 @@ material.h
 /home/haoyan/Raytrace/material.h
 bvh.h
 /home/haoyan/Raytrace/bvh.h
-iomanip
--
-thread
--
-mutex
--
+aarect.h
+/home/haoyan/Raytrace/aarect.h
 
 /home/haoyan/Raytrace/hittable.h
 vec3.h

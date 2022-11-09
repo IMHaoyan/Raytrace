@@ -4,6 +4,7 @@
 CMakeFiles/Raytrace.dir/main.cpp.o
  /home/haoyan/Raytrace/Raytrace.h
  /home/haoyan/Raytrace/aabb.h
+ /home/haoyan/Raytrace/aarect.h
  /home/haoyan/Raytrace/bvh.h
  /home/haoyan/Raytrace/camera.h
  /home/haoyan/Raytrace/color.h
