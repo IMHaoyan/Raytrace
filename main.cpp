@@ -10,6 +10,7 @@ const int max_depth = 5;
 const int num_threads = 18;
 
 // World
+color background = color(0,0,0);
 hittable_list world = random_scene();
 point3 lookfrom = point3(6, 4, 12);
 point3 lookat = point3(0, 1, 0);
@@ -52,48 +53,52 @@ hittable_list random_scene() {
     //     }
     // }
 
-    //auto material1 = make_shared<dielectric>(1.5);
-    //world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material1));
-    auto Diffuse = make_shared<diffuse>(color(0.4, 0.2, 0.1));
-    world.add(make_shared<sphere>(point3(-3.5, 1.3, 0), 1.3, Diffuse));
+    auto MatLight = make_shared<diffuse_light>(color(1, 1, 1));
+    world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, MatLight));
 
-    auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
-    world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material2));
-    
-    return hittable_list(make_shared<bvh_node>(
-        world));
+    auto MatDiffuse = make_shared<diffuse>(color(0.4, 0.2, 0.1));
+    world.add(make_shared<sphere>(point3(-3.5, 1.3, 0), 1.3, MatDiffuse));
+
+    auto MatLambertian = make_shared<lambertian>(color(0.4, 0.2, 0.1));
+    world.add(make_shared<sphere>(point3(3, 1.3, 0), 1.3, MatLambertian));
+
+    return hittable_list(make_shared<bvh_node>(world));
 }
 
-color ray_color(const ray& r, const hittable& world, int depth) {
+color ray_color(const ray &r, const color &background, const hittable &world,
+                int depth) {
     double RR = 1.0;
     if (depth <= 0) {
         RR = 0.8;
     }
-    if(random_double() > RR){
+    if (random_double() > RR) {
         return color(0, 0, 0);
     }
     hit_record rec;
-    if (world.hit(r, 0.001, infinity, rec)) {
-        ray scattered;
-        color attenuation;
-        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
-            return attenuation * ray_color(scattered, world, depth - 1) 
-                    * dot(unit_vector(scattered.direction()) , unit_vector(rec.normal)) 
-                   / rec.mat_ptr->pdf() / RR ;
-        } else {
-            return color(0, 0, 0);  // absorbed
-        }
-    } else {//background
-        vec3 unit_direction = unit_vector(r.direction());
-        auto t = 0.5 * (unit_direction.y() + 1.0);
-        return t * color(0.5, 0.7, 1.0) + (1.0 - t) * color(1.0, 1.0, 1.0);
+    if (!world.hit(r, 0.001, infinity, rec)) {
+        return background;
     }
+    ray scattered;
+    color attenuation;
+    color emit = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+
+    if (!rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+        return emit;
+    }else{
+        return emit + attenuation * ray_color(scattered, background, world, depth - 1) 
+                * dot(unit_vector(scattered.direction()), unit_vector(rec.normal)) 
+                / rec.mat_ptr->pdf() / RR;
+    }
+    // vec3 unit_direction = unit_vector(r.direction());
+    // auto t = 0.5 * (unit_direction.y() + 1.0);
+    // return t * color(0.5, 0.7, 1.0) + (1.0 - t) * color(1.0, 1.0, 1.0);
 }
 
 int main() {
     // Camera
     vec3 vup(0, 1, 0);
     auto dist_to_focus = 10.0;
+
     int image_width = static_cast<int>(image_height * aspect_ratio);
     camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture,
                dist_to_focus);
@@ -105,7 +110,7 @@ int main() {
     thread th[num_threads];
     int thread_height = image_height / num_threads;
 
-    auto begin = system_clock::now(),end = begin;
+    auto begin = system_clock::now(), end = begin;
     duration<double> diff = end - begin;
     cerr << "\nimage_height:\t" << image_height << "\t"
          << "spp:\t" << samples_per_pixel << "\n";
@@ -119,7 +124,7 @@ int main() {
                     auto v = (j + random_double()) / (image_height - 1);
                     ray r = cam.get_ray(u, v);
                     pixel_color +=
-                        ray_color(r, world, max_depth) / samples_per_pixel;
+                        ray_color(r, background, world, max_depth) / samples_per_pixel;
                 }
                 framebuffer[j * image_width + image_width - 1 - i] =
                     pixel_color;
