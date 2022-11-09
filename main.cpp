@@ -3,22 +3,23 @@ using namespace std;
 using namespace std::chrono;
 hittable_list random_scene();
 hittable_list simple_light_scene();
+hittable_list cornell_box();
 
-auto aspect_ratio = 16.0 / 9.0;
-int image_height = 360;
-int samples_per_pixel = 400;
+int image_height = 200;
+int samples_per_pixel = 10;
+auto aspect_ratio = 1.0;
+
 const int max_depth = 5;
-const int num_threads = 18;
-
-// World
+const int num_threads = 10;
 color background = color(0,0,0);
-hittable_list world = simple_light_scene();
-// point3 lookfrom = point3(6, 4, 12);
-// point3 lookat = point3(0, 1, 0);
-auto vfov = 20.0;
+// World
+
+hittable_list world = cornell_box();
+
 auto aperture = 0.0;
-auto lookfrom = point3(26,3,6);
-auto lookat = point3(0,2,0);
+auto lookfrom = point3(278, 278, 800);
+auto lookat = point3(278, 278, 0);
+auto vfov = 40.0;
 
 hittable_list random_scene() {
     hittable_list world;
@@ -81,6 +82,24 @@ hittable_list simple_light_scene() {
     return objects;
 }
 
+hittable_list cornell_box() {
+    hittable_list objects;
+
+    auto red   = make_shared<lambertian>(color(.65, .05, .05));
+    auto white = make_shared<lambertian>(color(.73, .73, .73));
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto light = make_shared<diffuse_light>(color(15, 15, 15));
+
+    objects.add(make_shared<yz_rect>(0, 555, -555, 0, 0, green));
+    objects.add(make_shared<yz_rect>(0, 555, -555, 0, 555, red));
+    objects.add(make_shared<xz_rect>(213, 343, -332, -227, 554, light));
+    objects.add(make_shared<xz_rect>(0, 555, -555, 0, 0, white));
+    objects.add(make_shared<xz_rect>(0, 555, -555, 0, 555, white));
+    objects.add(make_shared<xy_rect>(0, 555, 0, 555, -555, white));
+
+    return objects;
+}
+
 color ray_color(const ray &r, const color &background, const hittable &world,
                 int depth) {
     double RR = 1.0;
@@ -115,8 +134,9 @@ int main() {
     vec3 vup(0, 1, 0);
     auto dist_to_focus = 10.0;
 
+    auto aperture = 0.0;
     int image_width = static_cast<int>(image_height * aspect_ratio);
-    camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture,
+    camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture,
                dist_to_focus);
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
