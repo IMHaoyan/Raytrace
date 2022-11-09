@@ -5,12 +5,12 @@ hittable_list random_scene();
 hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
-int image_height = 500;
-int samples_per_pixel = 20;
+int image_height = 800;
+int samples_per_pixel = 10000;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
-const int num_threads = 10;
+const int num_threads = 20;
 color background = color(0, 0, 0);
 auto aperture = 0.0;
 auto vfov = 40.0;
