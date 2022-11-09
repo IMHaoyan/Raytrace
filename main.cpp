@@ -54,12 +54,12 @@ hittable_list random_scene() {
 
     //auto material1 = make_shared<dielectric>(1.5);
     //world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material1));
+    auto Diffuse = make_shared<diffuse>(color(0.4, 0.2, 0.1));
+    world.add(make_shared<sphere>(point3(-3.5, 1.3, 0), 1.3, Diffuse));
 
     auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
-    world.add(make_shared<sphere>(point3(-3.5, 1.3, 0), 1.3, material2));
-
-    auto Diffuse = make_shared<diffuse>(color(0.4, 0.2, 0.1));
-    world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, Diffuse));
+    world.add(make_shared<sphere>(point3(0, 1.3, 0), 1.3, material2));
+    
     return hittable_list(make_shared<bvh_node>(
         world));
 }
@@ -79,7 +79,7 @@ color ray_color(const ray& r, const hittable& world, int depth) {
         if (rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
             return attenuation * ray_color(scattered, world, depth - 1) 
                     * dot(unit_vector(scattered.direction()) , unit_vector(rec.normal)) 
-                    / RR ;
+                   / rec.mat_ptr->pdf() / RR ;
         } else {
             return color(0, 0, 0);  // absorbed
         }

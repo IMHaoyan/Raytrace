@@ -12,6 +12,9 @@ class material{
         virtual color emitted(double u, double v, const point3& p) const {
             return color(0,0,0);
         }
+        virtual float pdf() const {
+            return 1.0;
+        }
 };
 class diffuse_light : public material{
     public:
@@ -60,8 +63,11 @@ class diffuse : public material{
                 scatter_direction = rec.normal;
             }
             scattered = ray(rec.p, scatter_direction);
-            attenuation = albedo->value(rec.u, rec.v, rec.p);
+            attenuation = albedo->value(rec.u, rec.v, rec.p)/pi;
             return true;
+        }
+        virtual float pdf() const override{
+            return 0.5/pi;
         }
 };
 class metal : public material{
