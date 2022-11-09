@@ -5,8 +5,8 @@ hittable_list random_scene();
 hittable_list simple_light_scene();
 hittable_list cornell_box();
 
-int image_height = 200;
-int samples_per_pixel = 10;
+int image_height = 600;
+int samples_per_pixel = 200;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
@@ -72,7 +72,7 @@ hittable_list random_scene() {
 hittable_list simple_light_scene() {
     hittable_list objects;
 
-    auto Diffuse = make_shared<diffuse>(color(1,1,1)*4);
+    auto Diffuse = make_shared<diffuse>(color(1,1,1));
     objects.add(make_shared<sphere>(point3(0,-1000,0), 1000, Diffuse));
     objects.add(make_shared<sphere>(point3(0,2,0), 2, Diffuse));
 
@@ -96,6 +96,12 @@ hittable_list cornell_box() {
     objects.add(make_shared<xz_rect>(0, 555, -555, 0, 0, white));
     objects.add(make_shared<xz_rect>(0, 555, -555, 0, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, -555, white));
+
+    auto Metal = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
+    auto Diffuse = make_shared<diffuse>(color(1.00, 0.71, 0.29));
+
+    objects.add(make_shared<sphere>(point3(222,150,-333), 150, Metal));
+    objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
 
     return objects;
 }
