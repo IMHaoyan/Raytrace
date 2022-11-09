@@ -102,9 +102,9 @@ hittable_list cornell_box() {
 
     //objects.add(make_shared<sphere>(point3(222,150,-333), 150, Metal));
     // objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
-
+    
     objects.add(make_shared<box>(point3(260, 0, -230), point3(425, 165, -65), white));
-    //objects.add(make_shared<box>(point3(265, 0, 295), point3(430, 330, 460), white));
+    objects.add(make_shared<box>(point3(125, 0, -460), point3(290,330,-295), white));
     return objects;
 }
 
