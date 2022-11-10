@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 50;
+int samples_per_pixel = 10;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
@@ -173,6 +173,7 @@ hittable_list final() {
     return objects;
 }
 */
+
 color ray_color(const ray &r, const color &background, const hittable &world, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
@@ -185,21 +186,38 @@ color ray_color(const ray &r, const color &background, const hittable &world, in
     if (!world.hit(r, 0.001, infinity, rec)) {
         return background;
     }
+
     ray scattered;
     color albedo;
+    //color attenuation;
     double pdf;
     color emit = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
 
-    if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)) {
+    if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)){//hit the light
         return emit;
-    } else {
-        return emit + albedo * rec.mat_ptr->scattering_pdf(r,rec,scattered) 
+    }
+
+    auto on_light = point3(random_double(213,343), 554,random_double(227,332));
+    auto to_light = on_light - rec.p;
+    auto distance_squared = to_light.length_squared();
+    to_light = unit_vector(to_light);
+
+    if(dot(to_light, rec.normal)<0){
+        return emit;
+    }
+
+    double light_area = (343-213) * (332-227);
+    auto light_cosine = fabs(to_light.y());
+    if (light_cosine < 0.000001){
+        return emit;
+    }
+
+    pdf = distance_squared / (light_cosine * light_area);
+    scattered = ray(rec.p, to_light);
+
+    return emit + albedo * rec.mat_ptr->scattering_pdf(r,rec,scattered) 
                 * ray_color(scattered, background, world, depth - 1) 
                 / pdf / RR;
-    }
-    // vec3 unit_direction = unit_vector(r.direction());
-    // auto t = 0.5 * (unit_direction.y() + 1.0);
-    // return t * color(0.5, 0.7, 1.0) + (1.0 - t) * color(1.0, 1.0, 1.0);
 }
 
 int main() {
