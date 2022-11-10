@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 20;
+int samples_per_pixel = 100;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
@@ -17,12 +17,12 @@ auto vfov = 40.0;
 // World
 
 
-// hittable_list world = cornell_box();
-// auto lookfrom = point3(278, 278, -800);
-// auto lookat = point3(278, 278, 0);
-hittable_list world = final();
-auto lookfrom = point3(478, 278, -600);
+hittable_list world = cornell_box();
+auto lookfrom = point3(278, 278, -800);
 auto lookat = point3(278, 278, 0);
+// hittable_list world = final();
+// auto lookfrom = point3(478, 278, -600);
+// auto lookat = point3(278, 278, 0);
 
 hittable_list random_scene() {
     hittable_list world;
@@ -88,9 +88,9 @@ hittable_list simple_light_scene() {
 hittable_list cornell_box() {
     hittable_list objects;
 
-    auto red   = make_shared<lambertian>(color(.65, .05, .05));
-    auto white = make_shared<lambertian>(color(.73, .73, .73));
-    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto red   = make_shared<diffuse>(color(.65, .05, .05));
+    auto white = make_shared<diffuse>(color(.73, .73, .73));
+    auto green = make_shared<diffuse>(color(.12, .45, .15));
     auto light = make_shared<diffuse_light>(color(15, 15, 15));
 
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
@@ -205,10 +205,10 @@ int main() {
     // Camera
     vec3 vup(0, 1, 0);
     auto dist_to_focus = 10.0;
-
     auto aperture = 0.0;
     int image_width = static_cast<int>(image_height * aspect_ratio);
     camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
+
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
