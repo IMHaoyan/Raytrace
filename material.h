@@ -43,8 +43,8 @@ public:
     lambertian(const color& a) : albedo(make_shared<solid_color>(a)) {}
     lambertian(shared_ptr<texture> a) : albedo(a) {}
 
-    virtual bool scatter(const ray& r_in, const hit_record& rec, color& alb,
-                         ray& scattered, double& pdf) const override {
+    bool scatter(const ray& r_in, const hit_record& rec, color& alb,
+                         ray& scattered, double& pdf) const {
         auto scatter_direction = rec.normal + random_unit_vector();
         if (scatter_direction.near_zero()) {
             scatter_direction = rec.normal;
