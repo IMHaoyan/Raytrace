@@ -22,7 +22,6 @@ public:
 class diffuse_light : public material {
 public:
     shared_ptr<texture> emit;
-
 public:
     diffuse_light() {}
     diffuse_light(shared_ptr<texture> _emit) : emit(_emit) {}

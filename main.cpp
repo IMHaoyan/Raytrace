@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 100;
+int samples_per_pixel = 50;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
@@ -23,7 +23,7 @@ auto lookat = point3(278, 278, 0);
 // hittable_list world = final();
 // auto lookfrom = point3(478, 278, -600);
 // auto lookat = point3(278, 278, 0);
-
+/*
 hittable_list random_scene() {
     hittable_list world;
     auto checker = make_shared<lambertian>(
@@ -84,13 +84,13 @@ hittable_list simple_light_scene() {
 
     return objects;
 }
-
+*/
 hittable_list cornell_box() {
     hittable_list objects;
 
-    auto red   = make_shared<diffuse>(color(.65, .05, .05));
-    auto white = make_shared<diffuse>(color(.73, .73, .73));
-    auto green = make_shared<diffuse>(color(.12, .45, .15));
+    auto red   = make_shared<lambertian>(color(.65, .05, .05));
+    auto white = make_shared<lambertian>(color(.73, .73, .73));
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
     auto light = make_shared<diffuse_light>(color(15, 15, 15));
 
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
@@ -120,7 +120,7 @@ hittable_list cornell_box() {
 
     return objects;
 }
-
+/*
 hittable_list final() {
     hittable_list boxes1;
     auto ground = make_shared<lambertian>(color(0.48, 0.83, 0.53));
@@ -171,7 +171,7 @@ hittable_list final() {
 
     return objects;
 }
-
+*/
 color ray_color(const ray &r, const color &background, const hittable &world, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
@@ -186,8 +186,8 @@ color ray_color(const ray &r, const color &background, const hittable &world, in
     }
     ray scattered;
     color albedo;
-    color emit = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
     double pdf;
+    color emit = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
 
     if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)) {
         return emit;
