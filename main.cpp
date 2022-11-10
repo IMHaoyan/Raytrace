@@ -93,6 +93,8 @@ hittable_list cornell_box() {
     auto green = make_shared<lambertian>(color(.12, .45, .15));
     auto light = make_shared<diffuse_light>(color(15, 15, 15));
 
+    // objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, red));
+    // objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
     objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
@@ -102,9 +104,8 @@ hittable_list cornell_box() {
 
     // auto Metal = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     // auto Diffuse = make_shared<diffuse>(color(1.00, 0.71, 0.29));
-
     // objects.add(make_shared<sphere>(point3(222,150,-333), 150, Metal));
-    //  objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
+    // objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
 
     shared_ptr<hittable> box1 =
         make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
