@@ -100,8 +100,8 @@ hittable_list cornell_box() {
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
-    auto Metal = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
-    auto Diffuse = make_shared<diffuse>(color(1.00, 0.71, 0.29));
+    // auto Metal = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
+    // auto Diffuse = make_shared<diffuse>(color(1.00, 0.71, 0.29));
 
     // objects.add(make_shared<sphere>(point3(222,150,-333), 150, Metal));
     //  objects.add(make_shared<sphere>(point3(444,70,-222), 70, Diffuse));
@@ -185,16 +185,16 @@ color ray_color(const ray &r, const color &background, const hittable &world, in
         return background;
     }
     ray scattered;
-    color attenuation;
+    color albedo;
     color emit = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+    double pdf;
 
-    if (!rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+    if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)) {
         return emit;
     } else {
-        return emit +
-               attenuation * ray_color(scattered, background, world, depth - 1) *
-                   dot(unit_vector(scattered.direction()), unit_vector(rec.normal)) /
-                   rec.mat_ptr->pdf() / RR;
+        return emit + albedo * rec.mat_ptr->scattering_pdf(r,rec,scattered) 
+                * ray_color(scattered, background, world, depth - 1) 
+                / pdf / RR;
     }
     // vec3 unit_direction = unit_vector(r.direction());
     // auto t = 0.5 * (unit_direction.y() + 1.0);

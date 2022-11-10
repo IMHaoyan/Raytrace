@@ -12,28 +12,30 @@ public:
         return false;
     }
     virtual double scattering_pdf(const ray& r_in, const hit_record& rec,
-                                const ray& scattered) const {
+                                  const ray& scattered) const {
         return 0.0;
     }
     virtual color emitted(double u, double v, const point3& p) const {
         return color(0, 0, 0);
     }
 };
-// class diffuse_light : public material{
-//     public:
-//         shared_ptr<texture> emit;
-//     public:
-//         diffuse_light(){}
-//         diffuse_light(shared_ptr<texture> _emit): emit(_emit){}
-//         diffuse_light(color c): emit(make_shared<solid_color>(c)){}
-//         virtual bool scatter(const ray& r_in, const hit_record& rec,color& attenuation,
-//             ray& scattered) const override{
-//                 return false;
-//         }
-//         virtual color emitted(double u, double v, const point3& p) const override{
-//             return emit->value(u,v,p);
-//         }
-// };
+class diffuse_light : public material {
+public:
+    shared_ptr<texture> emit;
+
+public:
+    diffuse_light() {}
+    diffuse_light(shared_ptr<texture> _emit) : emit(_emit) {}
+    diffuse_light(color c) : emit(make_shared<solid_color>(c)) {}
+
+    virtual bool scatter(const ray& r_in, const hit_record& rec, color& albedo,
+                         ray& scattered, double& pdf) const override {
+        return false;
+    }
+    virtual color emitted(double u, double v, const point3& p) const override {
+        return emit->value(u, v, p);
+    }
+};
 class lambertian : public material {
 public:
     shared_ptr<texture> albedo;
@@ -54,7 +56,7 @@ public:
         return true;
     }
     double scattering_pdf(const ray& r_in, const hit_record& rec,
-                                const ray& scattered) const {
+                          const ray& scattered) const {
         auto cosine = dot(rec.normal, unit_vector(scattered.direction()));
         return cosine > 0 ? cosine / pi : 0;
     }
