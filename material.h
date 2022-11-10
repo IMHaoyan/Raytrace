@@ -16,7 +16,8 @@ public:
                                   const ray& scattered) const {
         return 0.0;
     }
-    virtual color emitted(double u, double v, const point3& p) const {
+    virtual color emitted(const ray& r_in, const hit_record& rec, double u, double v,
+        const point3& p) const {
         return color(0, 0, 0);
     }
 };
@@ -28,12 +29,17 @@ public:
     diffuse_light(shared_ptr<texture> _emit) : emit(_emit) {}
     diffuse_light(color c) : emit(make_shared<solid_color>(c)) {}
 
-    virtual bool scatter(const ray& r_in, const hit_record& rec, color& albedo,
-                         ray& scattered, double& pdf) const override {
+    bool scatter(const ray& r_in, const hit_record& rec, color& albedo,
+                         ray& scattered, double& pdf) const {
         return false;
     }
-    virtual color emitted(double u, double v, const point3& p) const override {
-        return emit->value(u, v, p);
+    color emitted(const ray& r_in, const hit_record& rec, double u, double v,
+        const point3& p) const {
+        if(rec.front_face){
+            return emit->value(u, v, p);
+        }else{
+            return color(0,0,0);
+        }
     }
 };
 class lambertian : public material {

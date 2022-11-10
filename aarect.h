@@ -96,8 +96,8 @@ bool xz_rect::hit(const ray& r, double t_min, double t_max, hit_record& rec) con
     rec.u = (x-x0)/(x1-x0);
     rec.v = (z-z0)/(z1-z0);
     rec.t = t;
-    auto outward_normal = vec3(0, 1, 0);
-    rec.set_face_normal(r, outward_normal);
+    auto outward_normal = vec3(0, -1, 0);//如果使用flipface 应该（0，1，0）
+    rec.set_face_normal(r, outward_normal);//normal会变  但frontface只与默认normal有关
     rec.mat_ptr = mp;
     rec.p = r.at(t);
     return true;
