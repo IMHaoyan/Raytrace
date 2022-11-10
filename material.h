@@ -45,13 +45,10 @@ public:
 
     bool scatter(const ray& r_in, const hit_record& rec, color& alb,
                          ray& scattered, double& pdf) const {
-        auto scatter_direction = rec.normal + random_unit_vector();
-        if (scatter_direction.near_zero()) {
-            scatter_direction = rec.normal;
-        }
+        auto scatter_direction = random_in_hemisphere(rec.normal);
         scattered = ray(rec.p, unit_vector(scatter_direction));
         alb = albedo->value(rec.u, rec.v, rec.p);
-        pdf = dot(rec.normal, scattered.direction()) / pi;
+        pdf = 0.5 / pi;
         return true;
     }
     double scattering_pdf(const ray& r_in, const hit_record& rec,
