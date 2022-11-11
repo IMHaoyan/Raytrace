@@ -175,7 +175,8 @@ hittable_list final() {
 }
 */
 
-color ray_color(const ray &r, const color &background, const hittable &world, int depth) {
+color ray_color(const ray &r, const color &background, const hittable &world, 
+    shared_ptr<hittable>& light, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
         RR = 0.8;
@@ -191,34 +192,38 @@ color ray_color(const ray &r, const color &background, const hittable &world, in
     ray scattered;
     color albedo;
     //color attenuation;
-    double pdf;
+    double pdf_val;
     color emit = rec.mat_ptr->emitted(r, rec, rec.u, rec.v, rec.p);
 
-    if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)){//hit the light
+    if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf_val)){//hit the light
         return emit;
     }
+    //引导第一次弹射后的光总是朝向太阳方向
+    // auto on_light = point3(random_double(213,343), 554,random_double(227,332));
+    // auto to_light = on_light - rec.p;
+    // auto distance_squared = to_light.length_squared();
+    // to_light = unit_vector(to_light);
+    // if(dot(to_light, rec.normal)<0){
+    //     return emit;
+    // }
+    // auto light_cosine = fabs(to_light.y());
+    // if (light_cosine < 0.000001){
+    //     return emit;
+    // }
+    // double light_area = (343-213) * (332-227);
+    // pdf = distance_squared / (light_cosine * light_area);
+    // scattered = ray(rec.p, to_light);
+    
+    //cosine_pdf p(rec.normal);
+    //scattered = ray(rec.p, p.generate());
+    //pdf_val = p.value(scattered.direction());
 
-    auto on_light = point3(random_double(213,343), 554,random_double(227,332));
-    auto to_light = on_light - rec.p;
-    auto distance_squared = to_light.length_squared();
-    to_light = unit_vector(to_light);
-
-    if(dot(to_light, rec.normal)<0){
-        return emit;
-    }
-
-    double light_area = (343-213) * (332-227);
-    auto light_cosine = fabs(to_light.y());
-    if (light_cosine < 0.000001){
-        return emit;
-    }
-
-    pdf = distance_squared / (light_cosine * light_area);
-    scattered = ray(rec.p, to_light);
-
+    hittable_pdf light_pdf(light, rec.p);
+    scattered = ray(rec.p, light_pdf.generate());
+    pdf_val = light_pdf.value(scattered.direction());
     return emit + albedo * rec.mat_ptr->scattering_pdf(r,rec,scattered) 
-                * ray_color(scattered, background, world, depth - 1) 
-                / pdf / RR;
+                * ray_color(scattered, background, world, light, depth - 1) 
+                / pdf_val / RR;
 }
 
 int main() {
@@ -228,7 +233,8 @@ int main() {
     auto aperture = 0.0;
     int image_width = static_cast<int>(image_height * aspect_ratio);
     camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
-
+    shared_ptr<hittable> light =
+        make_shared<xz_rect>(213, 343, 227, 332, 554, shared_ptr<material>());
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
@@ -251,7 +257,7 @@ int main() {
                     auto v = (j + random_double()) / (image_height - 1);
                     ray r = cam.get_ray(u, v);
                     pixel_color +=
-                        ray_color(r, background, world, max_depth) / samples_per_pixel;
+                        ray_color(r, background, world, light, max_depth) / samples_per_pixel;
                 }
                 framebuffer[j * image_width + image_width - 1 - i] = pixel_color;
             }

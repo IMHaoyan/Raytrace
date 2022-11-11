@@ -85,6 +85,8 @@ aarect.h
 /home/haoyan/Raytrace/aarect.h
 box.h
 /home/haoyan/Raytrace/box.h
+pdf.h
+/home/haoyan/Raytrace/pdf.h
 
 /home/haoyan/Raytrace/hittable.h
 aabb.h
@@ -114,6 +116,12 @@ texture.h
 onb.h
 /home/haoyan/Raytrace/onb.h
 
+/home/haoyan/Raytrace/onb.h
+vec3.h
+/home/haoyan/Raytrace/vec3.h
+
+/home/haoyan/Raytrace/pdf.h
+onb.h
 /home/haoyan/Raytrace/onb.h
 vec3.h
 /home/haoyan/Raytrace/vec3.h
