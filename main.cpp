@@ -14,7 +14,7 @@ const int num_threads = 10;
 color background = color(0, 0, 0);
 auto aperture = 0.0;
 auto vfov = 40.0;
-// World
+// World//test
 
 
 hittable_list world = cornell_box();
