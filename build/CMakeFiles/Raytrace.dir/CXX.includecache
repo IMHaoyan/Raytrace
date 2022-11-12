@@ -115,6 +115,8 @@ texture.h
 /home/haoyan/Raytrace/texture.h
 onb.h
 /home/haoyan/Raytrace/onb.h
+pdf.h
+/home/haoyan/Raytrace/pdf.h
 
 /home/haoyan/Raytrace/onb.h
 vec3.h

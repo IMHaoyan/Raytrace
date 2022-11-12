@@ -6,13 +6,12 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 1000;
+int samples_per_pixel = 50;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
 const int num_threads = 10;
 color background = color(0, 0, 0);
-auto aperture = 0.0;
 auto vfov = 40.0;
 
 hittable_list world = cornell_box();
@@ -177,7 +176,7 @@ make_shared<metal>(color(0.8, 0.8, 0.9), 1.0)
 */
 
 color ray_color(const ray &r, const color &background, const hittable &world,
-                shared_ptr<hittable> &light, int depth) {
+                shared_ptr<hittable>& light, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
         RR = 0.8;
@@ -190,23 +189,20 @@ color ray_color(const ray &r, const color &background, const hittable &world,
         return background;
     }
 
-    ray scattered;
-    color albedo;
-    double pdf_val;
     color emit = rec.mat_ptr->emitted(r, rec, rec.u, rec.v, rec.p);
+    scatter_record srec;
 
-    if (!rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf_val)) {  // hit the light
+    if (!rec.mat_ptr->scatter(r, rec, srec)) {  // hit the light
         return emit;
     }
-
-    mix_pdf mix(make_shared<cosine_pdf>(rec.normal),
-                make_shared<hittable_pdf>(light, rec.p));
+    //scattered一开始表示随机采样 后来被我们替换成mix_pdf采样
+    mix_pdf mix(srec.pdf_ptr, make_shared<hittable_pdf>(light, rec.p));
     vec3 direction = mix.generate();
-    pdf_val = mix.value(direction);
-    scattered = ray(rec.p, direction);
+    auto pdf_val = mix.value(direction);
+    srec.specular_ray = ray(rec.p, direction);
 
-    return emit + albedo * rec.mat_ptr->scattering_pdf(r, rec, scattered) *
-                      ray_color(scattered, background, world, light, depth - 1) /
+    return emit + srec.attenuation * rec.mat_ptr->scattering_pdf(r, rec, srec.specular_ray) *
+                      ray_color(srec.specular_ray, background, world, light, depth - 1) /
                       pdf_val / RR;
 }
 
