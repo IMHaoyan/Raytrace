@@ -2,6 +2,7 @@
 #define PDF_H
 #include "onb.h"
 #include "vec3.h"
+#include "hittable_list.h"
 class pdf {
 public:
     virtual ~pdf() {}
@@ -35,11 +36,28 @@ public:
 public:
     hittable_pdf(shared_ptr<hittable> p, const point3& origin) : 
         ptr(p), o(origin) {}
+    
     virtual double value(const vec3& direction) const override {
         return ptr->pdf_value(o, direction);
     }
     virtual vec3 generate() const override {
         return ptr->random(o);
+    }
+};
+class hittablelist_pdf : public pdf {
+public:
+    point3 o;
+    hittable_list ptr;
+
+public:
+    hittablelist_pdf(hittable_list p, const point3& origin) : 
+        ptr(p), o(origin) {}
+    
+    virtual double value(const vec3& direction) const override {
+        return ptr.pdf_value(o, direction);
+    }
+    virtual vec3 generate() const override {
+        return ptr.random(o);
     }
 };
 

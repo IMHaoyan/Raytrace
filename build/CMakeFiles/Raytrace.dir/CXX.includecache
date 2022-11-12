@@ -95,12 +95,12 @@ ray.h
 /home/haoyan/Raytrace/ray.h
 
 /home/haoyan/Raytrace/hittable_list.h
-hittable.h
-/home/haoyan/Raytrace/hittable.h
 memory
 -
 vector
 -
+hittable.h
+/home/haoyan/Raytrace/hittable.h
 
 /home/haoyan/Raytrace/main.cpp
 head.h
@@ -127,6 +127,8 @@ onb.h
 /home/haoyan/Raytrace/onb.h
 vec3.h
 /home/haoyan/Raytrace/vec3.h
+hittable_list.h
+/home/haoyan/Raytrace/hittable_list.h
 
 /home/haoyan/Raytrace/ray.h
 vec3.h
@@ -135,6 +137,8 @@ vec3.h
 /home/haoyan/Raytrace/sphere.h
 hittable.h
 /home/haoyan/Raytrace/hittable.h
+onb.h
+/home/haoyan/Raytrace/onb.h
 vec3.h
 /home/haoyan/Raytrace/vec3.h
 

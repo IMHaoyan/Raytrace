@@ -17,8 +17,12 @@ auto vfov = 40.0;
 hittable_list world = cornell_box();
 auto lookfrom = point3(278, 278, -800);
 auto lookat = point3(278, 278, 0);
-shared_ptr<hittable> light = make_shared<xz_rect>(213, 343, 227, 332, 554, 
-                            shared_ptr<material>());
+
+
+// shared_ptr<hittable> light = make_shared<xz_rect>(213, 343, 227, 332, 554, 
+//     shared_ptr<material>());
+//shared_ptr<hittable> light = 
+        //make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>());
 // hittable_list world = final();
 // auto lookfrom = point3(478, 278, -600);
 // auto lookat = point3(278, 278, 0);
@@ -176,7 +180,7 @@ make_shared<metal>(color(0.8, 0.8, 0.9), 1.0)
 */
 
 color ray_color(const ray &r, const color &background, const hittable &world,
-                shared_ptr<hittable>& light, int depth) {
+                hittable_list light, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
         RR = 0.8;
@@ -201,7 +205,7 @@ color ray_color(const ray &r, const color &background, const hittable &world,
     }
     //scattered一开始表示随机采样或者镜面反射 后来被我们替换成mix_pdf采样
 
-    mix_pdf mix(srec.pdf_ptr, make_shared<hittable_pdf>(light, rec.p));
+    mix_pdf mix(srec.pdf_ptr, make_shared<hittablelist_pdf>(light, rec.p));
 
     vec3 direction = mix.generate();
 
@@ -222,6 +226,9 @@ int image_width = static_cast<int>(image_height * aspect_ratio);
 camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
 
 int main() {
+    hittable_list lights;
+    lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
+    lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
@@ -242,7 +249,7 @@ int main() {
                     auto u = (i + random_double()) / (image_width - 1);
                     auto v = (j + random_double()) / (image_height - 1);
                     ray r = cam.get_ray(u, v);
-                    pixel_color += ray_color(r, background, world, light, max_depth) /
+                    pixel_color += ray_color(r, background, world, lights, max_depth) /
                                    samples_per_pixel;
                 }
                 framebuffer[j * image_width + image_width - 1 - i] = pixel_color;
