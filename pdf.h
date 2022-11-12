@@ -56,8 +56,10 @@ public:
     }
     virtual vec3 generate() const override {
         if(random_double() > 0.5){
+            cerr<<"\nok pdfs[0]->generate();\n";
             return pdfs[0]->generate();
         }else{
+            cerr<<"\nok pdfs[1]->generate();\n";
             return pdfs[1]->generate();
         }
     }

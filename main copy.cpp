@@ -10,7 +10,7 @@ int samples_per_pixel = 20;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
-const int num_threads = 1;
+const int num_threads = 10;
 color background = color(0, 0, 0);
 auto vfov = 40.0;
 
@@ -113,12 +113,11 @@ hittable_list cornell_box() {
     box1 = make_shared<translate>(box1, vec3(265, 0, 295));
     objects.add(box1);
 
-    objects.add(make_shared<sphere>(point3(190,90,190), 90 , white));
-    // shared_ptr<hittable> box2 =
-    //     make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
-    // box2 = make_shared<rotate_y>(box2, -18);
-    // box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    // objects.add(box2);
+    shared_ptr<hittable> box2 =
+        make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
+    box2 = make_shared<rotate_y>(box2, -18);
+    box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+    objects.add(box2);
 
     return objects;
 }
@@ -196,17 +195,12 @@ color ray_color(const ray &r, const color &background, const hittable &world,
         return emit;
     }
     //scattered一开始表示随机采样 后来被我们替换成mix_pdf采样
-    cerr<<"\nok0\n";
     mix_pdf mix(srec.pdf_ptr, make_shared<hittable_pdf>(light, rec.p));
-    cerr<<"\nok1\n";cerr<<rec.mat_ptr->id;
     vec3 direction = mix.generate();
-    cerr<<"\nok2\n";
     auto pdf_val = mix.value(direction);
-    cerr<<"\nok3\n";
     srec.specular_ray = ray(rec.p, direction);
 
     if(srec.is_specular){
-        cerr<<"\nsrec.is_specular ok\n";
         return  srec.attenuation * ray_color(srec.specular_ray, background, world, light, depth - 1)  / RR;
     }
 
