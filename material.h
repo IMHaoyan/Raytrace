@@ -85,7 +85,7 @@ class metal : public material {
             srec.specular_ray = ray(rec.p, reflected+fuzz*random_in_unit_sphere());
             srec.attenuation = albedo;
             srec.is_specular = true;
-            srec.pdf_ptr = 0;
+            srec.pdf_ptr = nullptr;
             return true;
         }
 };
@@ -94,7 +94,7 @@ class dielectric : public material {
     public:
         double ir;
     public:
-        dielectric(double index_of_refraction) : ir(index_of_refraction) {}
+        dielectric(double index_of_refraction) : ir(index_of_refraction) {id =4;}
         virtual bool scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const override {
             srec.attenuation = color(1.0, 1.0, 1.0);
             double refraction_ratio = rec.front_face ? (1.0/ir) : ir;

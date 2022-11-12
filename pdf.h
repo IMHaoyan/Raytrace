@@ -47,19 +47,17 @@ class mix_pdf : public pdf{
 public:
     shared_ptr<pdf> pdfs[2];
 public:
-    mix_pdf(shared_ptr<pdf> a,shared_ptr<pdf> b){
-        pdfs[0] = a;
-        pdfs[1] = b;
+    mix_pdf(shared_ptr<pdf> object_pdf, shared_ptr<pdf> light_pdf){
+        pdfs[0] = object_pdf;
+        pdfs[1] = light_pdf;
     }
     virtual double value(const vec3& direction) const override {
         return 0.5 * pdfs[0]->value(direction) + 0.5* pdfs[1]->value(direction);
     }
     virtual vec3 generate() const override {
         if(random_double() > 0.5){
-            cerr<<"\nok pdfs[0]->generate();\n";
             return pdfs[0]->generate();
         }else{
-            cerr<<"\nok pdfs[1]->generate();\n";
             return pdfs[1]->generate();
         }
     }
