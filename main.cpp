@@ -6,11 +6,11 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 20;
+int samples_per_pixel = 50;
 auto aspect_ratio = 1.0;
 
 const int max_depth = 5;
-const int num_threads = 1;
+const int num_threads = 10;
 color background = color(0, 0, 0);
 auto vfov = 40.0;
 
@@ -115,9 +115,12 @@ hittable_list cornell_box() {
         make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), Metal);
     box1 = make_shared<rotate_y>(box1, 15);
     box1 = make_shared<translate>(box1, vec3(265, 0, 295));
-    objects.add(box1);
+    //objects.add(box1);
 
-    objects.add(make_shared<sphere>(point3(190,90,190), 90 , glass));
+    objects.add(make_shared<sphere>(point3(277,277,277), 150 , Metal));
+
+    //objects.add(make_shared<sphere>(point3(190,90,190), 90 , Metal));
+
     // shared_ptr<hittable> box2 =
     //     make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
     // box2 = make_shared<rotate_y>(box2, -18);
@@ -228,7 +231,9 @@ camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
 int main() {
     hittable_list lights;
     lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
-    lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
+    //lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
+    lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
+
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
