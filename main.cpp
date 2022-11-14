@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 256;
+int samples_per_pixel = 32;
 auto aspect_ratio = 1.0;
 //make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
 const int bounce = 5;
@@ -100,9 +100,10 @@ hittable_list cornell_box() {
 
     auto red = make_shared<lambertian>(color(0.63f, 0.065f, 0.05f));
     auto white = make_shared<lambertian>(color(0.725f, 0.71f, 0.68f));
+    
     auto green = make_shared<lambertian>(color(0.14f, 0.45f, 0.091f));
     auto light = make_shared<diffuse_light>(color(8.0f * color(0.747f+0.058f, 0.747f+0.258f, 0.747f) + 15.6f * color(0.740f+0.287f,0.740f+0.160f,0.740f) + 18.4f *color(0.737f+0.642f,0.737f+0.159f,0.737f)));
-
+ 
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
     objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
@@ -110,6 +111,14 @@ hittable_list cornell_box() {
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
+    auto Micro = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
+    Micro->rough = 0.0;//Micro->Kd = vec3(0.725f, 0.71f, 0.68f);
+
+    auto Micro1 = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
+    Micro1->rough = 0.4;//Micro1->Kd = vec3(0.725f, 0.71f, 0.68f);
+
+    auto Micro2 = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
+    Micro2->rough = 0.8;Micro2->Kd = vec3(0.725f, 0.71f, 0.68f);
     // shared_ptr<hittable> box1 =
     //     make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
     // box1 = make_shared<rotate_y>(box1, 15);
@@ -123,8 +132,9 @@ hittable_list cornell_box() {
 
     auto Metal = make_shared<metal>(color(0.8, 0.85, 0.88), 0);
     auto glass = make_shared<dielectric>(1.5);
-    objects.add(make_shared<sphere>(point3(190,90,190), 90 , glass));
-
+    objects.add(make_shared<sphere>(point3(395,100,300), 100 , Micro));
+    //objects.add(make_shared<sphere>(point3(276,100,300), 50 , Micro2));
+    objects.add(make_shared<sphere>(point3(157,100,300), 100 , Micro1));
     return objects;
 }
 /*
@@ -219,7 +229,11 @@ color ray_color(const ray &r, const color &background, const hittable &world,
         srec.specular_ray = ray(rec.p, direction);
 
     }
-
+    if(rec.mat_ptr->id == 9){
+        //cerr<<"Ok\n";
+        srec.attenuation = //vec3(1,1,1);
+            rec.mat_ptr->micro_attention(unit_vector(r.direction()),direction,rec.normal);
+    }
     return emit + srec.attenuation * rec.mat_ptr->scattering_pdf(r, rec, srec.specular_ray) *
                       ray_color(srec.specular_ray, background, world, lights, depth - 1) /
                       pdf_val / RR;
@@ -229,7 +243,7 @@ int main() {
     //要采样的面光源
     hittable_list lights;
     lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
-    lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
+    //lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
     //lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
     cerr<<"\nnumber of sampling area:\t"<<lights.objects.size();
 

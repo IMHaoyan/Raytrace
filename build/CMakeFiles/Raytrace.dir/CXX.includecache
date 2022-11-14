@@ -15,10 +15,10 @@ limits
 -
 memory
 -
-vec3.h
-/home/haoyan/Raytrace/vec3.h
 ray.h
 /home/haoyan/Raytrace/ray.h
+vec3.h
+/home/haoyan/Raytrace/vec3.h
 
 /home/haoyan/Raytrace/aabb.h
 Raytrace.h
@@ -111,12 +111,12 @@ Raytrace.h
 /home/haoyan/Raytrace/Raytrace.h
 hittable.h
 /home/haoyan/Raytrace/hittable.h
-texture.h
-/home/haoyan/Raytrace/texture.h
 onb.h
 /home/haoyan/Raytrace/onb.h
 pdf.h
 /home/haoyan/Raytrace/pdf.h
+texture.h
+/home/haoyan/Raytrace/texture.h
 
 /home/haoyan/Raytrace/onb.h
 vec3.h
