@@ -6,10 +6,11 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 50;
+int samples_per_pixel = 512;
 auto aspect_ratio = 1.0;
-
-const int max_depth = 5;
+//make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
+const int bounce = 5;
+const int max_depth = bounce + 1;
 const int num_threads = 10;
 color background = color(0, 0, 0);
 auto vfov = 40.0;
@@ -99,8 +100,6 @@ hittable_list cornell_box() {
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
     objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
-    // objects.add(make_shared<flip_face>(make_shared<xz_rect>(213, 343, 227, 332, 554,
-    // light)));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
@@ -110,20 +109,20 @@ hittable_list cornell_box() {
     
 
     shared_ptr<hittable> box1 =
-        make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), Metal);
+        make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
     box1 = make_shared<rotate_y>(box1, 15);
     box1 = make_shared<translate>(box1, vec3(265, 0, 295));
-    //objects.add(box1);
+    objects.add(box1);
 
-    objects.add(make_shared<sphere>(point3(277,277,277), 150 , Metal));
+    //objects.add(make_shared<sphere>(point3(277,277,277), 150 , Metal));
 
     //objects.add(make_shared<sphere>(point3(190,90,190), 90 , Metal));
 
-    // shared_ptr<hittable> box2 =
-    //     make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
-    // box2 = make_shared<rotate_y>(box2, -18);
-    // box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    // objects.add(box2);
+    shared_ptr<hittable> box2 =
+        make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
+    box2 = make_shared<rotate_y>(box2, -18);
+    box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+    objects.add(box2);
 
     return objects;
 }
@@ -181,7 +180,7 @@ make_shared<metal>(color(0.8, 0.8, 0.9), 1.0)
 */
 
 color ray_color(const ray &r, const color &background, const hittable &world,
-                hittable_list light, int depth) {
+                hittable_list lights, int depth) {
     double RR = 1.0;
     if (depth <= 0) {
         RR = 0.8;
@@ -202,20 +201,26 @@ color ray_color(const ray &r, const color &background, const hittable &world,
     }
 
     if(srec.is_specular){
-        return  srec.attenuation * ray_color(srec.specular_ray, background, world, light, depth - 1)  / RR;
+        return  srec.attenuation * ray_color(srec.specular_ray, background, world, lights, depth - 1)  / RR;
     }
     //scattered一开始表示随机采样或者镜面反射 后来被我们替换成mix_pdf采样
+    vec3 direction;
+    double pdf_val;
+    if(!lights.objects.size()){
+        shared_ptr<pdf> pdf = srec.pdf_ptr;
+        direction = pdf->generate();
+        pdf_val = pdf->value(direction);
+        srec.specular_ray = ray(rec.p, direction);
+    } else {
+        mix_pdf mix(srec.pdf_ptr, make_shared<hittablelist_pdf>(lights, rec.p));
+        direction = mix.generate();
+        pdf_val = mix.value(direction);
+        srec.specular_ray = ray(rec.p, direction);
 
-    mix_pdf mix(srec.pdf_ptr, make_shared<hittablelist_pdf>(light, rec.p));
-
-    vec3 direction = mix.generate();
-
-    auto pdf_val = mix.value(direction);
-
-    srec.specular_ray = ray(rec.p, direction);
+    }
 
     return emit + srec.attenuation * rec.mat_ptr->scattering_pdf(r, rec, srec.specular_ray) *
-                      ray_color(srec.specular_ray, background, world, light, depth - 1) /
+                      ray_color(srec.specular_ray, background, world, lights, depth - 1) /
                       pdf_val / RR;
 }
 
@@ -228,10 +233,10 @@ camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
 
 int main() {
     hittable_list lights;
-    lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
+    //lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
     //lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
-    lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
-
+    //lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
+    cerr<<lights.objects.size()<<"\n";
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
