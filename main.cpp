@@ -91,13 +91,11 @@ hittable_list simple_light_scene() {
 hittable_list cornell_box() {
     hittable_list objects;
 
-    auto red = make_shared<lambertian>(color(.65, .05, .05));
-    auto white = make_shared<lambertian>(color(.73, .73, .73));
-    auto green = make_shared<lambertian>(color(.12, .45, .15));
-    auto light = make_shared<diffuse_light>(color(15, 15, 15));
+    auto red = make_shared<lambertian>(color(0.63f, 0.065f, 0.05f));
+    auto white = make_shared<lambertian>(color(0.725f, 0.71f, 0.68f));
+    auto green = make_shared<lambertian>(color(0.14f, 0.45f, 0.091f));
+    auto light = make_shared<diffuse_light>(color(8.0f * color(0.747f+0.058f, 0.747f+0.258f, 0.747f) + 15.6f * color(0.740f+0.287f,0.740f+0.160f,0.740f) + 18.4f *color(0.737f+0.642f,0.737f+0.159f,0.737f)));
 
-    // objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, red));
-    // objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
     objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
