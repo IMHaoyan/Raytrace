@@ -19,6 +19,12 @@ hittable_list world = cornell_box();
 auto lookfrom = point3(278, 278, -800);
 auto lookat = point3(278, 278, 0);
 
+// Camera
+vec3 vup(0, 1, 0);
+auto dist_to_focus = 10.0;
+auto aperture = 0.0;
+int image_width = static_cast<int>(image_height * aspect_ratio);
+camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
 
 // shared_ptr<hittable> light = make_shared<xz_rect>(213, 343, 227, 332, 554, 
 //     shared_ptr<material>());
@@ -104,23 +110,20 @@ hittable_list cornell_box() {
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
+    // shared_ptr<hittable> box1 =
+    //     make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
+    // box1 = make_shared<rotate_y>(box1, 15);
+    // box1 = make_shared<translate>(box1, vec3(265, 0, 295));
+    // objects.add(box1);
+    // shared_ptr<hittable> box2 =
+    //     make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
+    // box2 = make_shared<rotate_y>(box2, -18);
+    // box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+    // objects.add(box2);  
+
     auto Metal = make_shared<metal>(color(0.8, 0.85, 0.88), 0);
     auto glass = make_shared<dielectric>(1.5);
-    
-
-    shared_ptr<hittable> box1 =
-        make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
-    box1 = make_shared<rotate_y>(box1, 15);
-    box1 = make_shared<translate>(box1, vec3(265, 0, 295));
-    objects.add(box1);
-    shared_ptr<hittable> box2 =
-        make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
-    box2 = make_shared<rotate_y>(box2, -18);
-    box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    objects.add(box2);  
-
-    //objects.add(make_shared<sphere>(point3(277,277,277), 150 , Metal));
-    //objects.add(make_shared<sphere>(point3(190,90,190), 90 , Metal));
+    objects.add(make_shared<sphere>(point3(190,90,190), 90 , glass));
 
     return objects;
 }
@@ -222,19 +225,15 @@ color ray_color(const ray &r, const color &background, const hittable &world,
                       pdf_val / RR;
 }
 
-// Camera
-vec3 vup(0, 1, 0);
-auto dist_to_focus = 10.0;
-auto aperture = 0.0;
-int image_width = static_cast<int>(image_height * aspect_ratio);
-camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
-
 int main() {
+    //要采样的面光源
     hittable_list lights;
     lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
-    //lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
+    lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
     //lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
-    cerr<<lights.objects.size()<<"\n";
+    cerr<<"\nnumber of sampling area:\t"<<lights.objects.size();
+
+
     // Render
     cout << "P3\n" << image_width << " " << image_height << "\n255\n";
     vector<color> framebuffer(image_height * image_width);
