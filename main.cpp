@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 500;
-int samples_per_pixel = 512;
+int samples_per_pixel = 256;
 auto aspect_ratio = 1.0;
 //make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
 const int bounce = 5;
@@ -113,16 +113,14 @@ hittable_list cornell_box() {
     box1 = make_shared<rotate_y>(box1, 15);
     box1 = make_shared<translate>(box1, vec3(265, 0, 295));
     objects.add(box1);
-
-    //objects.add(make_shared<sphere>(point3(277,277,277), 150 , Metal));
-
-    //objects.add(make_shared<sphere>(point3(190,90,190), 90 , Metal));
-
     shared_ptr<hittable> box2 =
         make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
     box2 = make_shared<rotate_y>(box2, -18);
     box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    objects.add(box2);
+    objects.add(box2);  
+
+    //objects.add(make_shared<sphere>(point3(277,277,277), 150 , Metal));
+    //objects.add(make_shared<sphere>(point3(190,90,190), 90 , Metal));
 
     return objects;
 }
@@ -233,7 +231,7 @@ camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus);
 
 int main() {
     hittable_list lights;
-    //lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
+    lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
     //lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
     //lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
     cerr<<lights.objects.size()<<"\n";
