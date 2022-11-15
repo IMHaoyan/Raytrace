@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 800;
-int samples_per_pixel = 2048;
+int samples_per_pixel = 128;
 auto aspect_ratio = 1.0;
 //make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
 const int bounce = 5;
@@ -109,14 +109,16 @@ hittable_list cornell_box() {
     auto kaqi = make_shared<lambertian>(color(89,183,107)/255.0);
     auto toma = make_shared<lambertian>(color(253,245,230)/255.0);
     auto orange = make_shared<lambertian>(color(255,165,0)/255.0);
-    auto white = make_shared<Mro_lambertian>(color(1.0f, 1.0f, 1.0f));
+    auto micro = make_shared<Mro_lambertian>(color(1.0f, 1.0f, 1.0f));
+    micro->Kd = color(1,1,1);
+    auto white = make_shared<lambertian>(color(1.0f, 1.0f, 1.0f));
     auto green = make_shared<lambertian>(color(0.14f, 0.45f, 0.091f));
     auto light = make_shared<diffuse_light>(color(8.0f * color(0.747f+0.058f, 0.747f+0.258f, 0.747f) + 15.6f * color(0.740f+0.287f,0.740f+0.160f,0.740f) + 18.4f *color(0.737f+0.642f,0.737f+0.159f,0.737f)));
     
-    for (int j = 0; j < 1000; j++) {
-        auto albedo = color::random() * color::random();
-        objects.add(make_shared<sphere>(vec3::random(0,150)+vec3(390,330,200), 10 , make_shared<lambertian>(albedo)));
-    }
+    // for (int j = 0; j < 1000; j++) {
+    //     auto albedo = color::random() * color::random();
+    //     objects.add(make_shared<sphere>(vec3::random(0,150)+vec3(390,330,200), 10 , make_shared<lambertian>(albedo)));
+    // }
 
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, purple));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
@@ -136,7 +138,7 @@ hittable_list cornell_box() {
     box1 = make_shared<translate>(box1, vec3(295, 0, 295));
     objects.add(box1);
     shared_ptr<hittable> box2 =//tall
-        make_shared<box>(point3(0, 0, 0), point3(145, 330, 145), toma);
+        make_shared<box>(point3(0, 0, 0), point3(145, 330, 145), micro);
     box2 = make_shared<rotate_y>(box2, -50);
     box2 = make_shared<translate>(box2, vec3(150, 0, 140));
     objects.add(box2);  

@@ -165,8 +165,7 @@ public:
         //return vec3(1,1,1);
         float cosalpha = dot(N, wo);
             if (cosalpha > 0.0f) {
-                float roughness = 0.0f, etat =1.85;
-                roughness = this->rough;
+                float roughness = 0.4f, etat =1.85;
                 vec3 V = -wi;
                 vec3 L = wo;
                 vec3 H = unit_vector(V + L);
@@ -188,8 +187,9 @@ public:
                 // 因为在 specular里已考虑折射部分的比例：F，所以折射部分不需再乘 ks_
                 // （ks_ * Ks * specular）
                 //return kd_ * Kd * diffuse + Ks * specular;
-                return specular* M_PI;
-                return (kd_ * diffuse +  vec3(10,0,0)*specular)* M_PI;
+                
+                //if(specular[0]>0.01)cerr<<specular<<"\n";
+                return (kd_ * diffuse +  specular)* M_PI;
             } else
                 return vec3(0,0,0);
     }
