@@ -5,22 +5,26 @@ hittable_list random_scene();
 hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
-int image_height = 500;
-int samples_per_pixel = 32;
+int image_height = 800;
+int samples_per_pixel = 2048;
 auto aspect_ratio = 1.0;
 //make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
 const int bounce = 5;
 const int max_depth = bounce + 1;
 const int num_threads = 10;
 color background = color(0, 0, 0);
-auto vfov = 40.0;
-
 hittable_list world = cornell_box();
+
 auto lookfrom = point3(278, 278, -800);
 auto lookat = point3(278, 278, 0);
-
-// Camera
 vec3 vup(0, 1, 0);
+auto vfov = 40.0;
+//俯视角
+// auto lookfrom = point3(270, 554, 270);
+// auto lookat = point3(270, 0, 270);
+// vec3 vup(1, 0, 0);
+// auto vfov = 90.0;
+
 auto dist_to_focus = 10.0;
 auto aperture = 0.0;
 int image_width = static_cast<int>(image_height * aspect_ratio);
@@ -98,43 +102,51 @@ hittable_list simple_light_scene() {
 hittable_list cornell_box() {
     hittable_list objects;
 
-    auto red = make_shared<lambertian>(color(0.63f, 0.065f, 0.05f));
-    auto white = make_shared<lambertian>(color(0.725f, 0.71f, 0.68f));
     
+    auto red = make_shared<lambertian>(color(244,164,96)/256);
+    auto purple = make_shared<lambertian>(color(114,70,129)/255.0);
+    auto blue = make_shared<lambertian>(color(135,206,250)/255.0);
+    auto kaqi = make_shared<lambertian>(color(89,183,107)/255.0);
+    auto toma = make_shared<lambertian>(color(253,245,230)/255.0);
+    auto orange = make_shared<lambertian>(color(255,165,0)/255.0);
+    auto white = make_shared<Mro_lambertian>(color(1.0f, 1.0f, 1.0f));
     auto green = make_shared<lambertian>(color(0.14f, 0.45f, 0.091f));
     auto light = make_shared<diffuse_light>(color(8.0f * color(0.747f+0.058f, 0.747f+0.258f, 0.747f) + 15.6f * color(0.740f+0.287f,0.740f+0.160f,0.740f) + 18.4f *color(0.737f+0.642f,0.737f+0.159f,0.737f)));
- 
-    objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
+    
+    for (int j = 0; j < 1000; j++) {
+        auto albedo = color::random() * color::random();
+        objects.add(make_shared<sphere>(vec3::random(0,150)+vec3(390,330,200), 10 , make_shared<lambertian>(albedo)));
+    }
+
+    objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, purple));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
     objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
-    objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
+    objects.add(make_shared<xz_rect>(0, 550, 0, 550, 0, blue));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
-    objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
+    objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, green));
 
-    auto Micro = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
-    Micro->rough = 0.0;//Micro->Kd = vec3(0.725f, 0.71f, 0.68f);
-
-    auto Micro1 = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
-    Micro1->rough = 0.4;//Micro1->Kd = vec3(0.725f, 0.71f, 0.68f);
-
-    auto Micro2 = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
-    Micro2->rough = 0.8;Micro2->Kd = vec3(0.725f, 0.71f, 0.68f);
-    // shared_ptr<hittable> box1 =
-    //     make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
-    // box1 = make_shared<rotate_y>(box1, 15);
-    // box1 = make_shared<translate>(box1, vec3(265, 0, 295));
-    // objects.add(box1);
-    // shared_ptr<hittable> box2 =
-    //     make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
-    // box2 = make_shared<rotate_y>(box2, -18);
-    // box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-    // objects.add(box2);  
+    // shared_ptr<hittable> box0 =
+    //     make_shared<box>(point3(0, 0, 0), point3(150, 150, 150), orange);
+    // box0 = make_shared<translate>(box0, vec3(390,330,200));
+    // objects.add(box0);
+    
+    shared_ptr<hittable> box1 =
+        make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), orange);
+    box1 = make_shared<rotate_y>(box1, 20);
+    box1 = make_shared<translate>(box1, vec3(295, 0, 295));
+    objects.add(box1);
+    shared_ptr<hittable> box2 =//tall
+        make_shared<box>(point3(0, 0, 0), point3(145, 330, 145), toma);
+    box2 = make_shared<rotate_y>(box2, -50);
+    box2 = make_shared<translate>(box2, vec3(150, 0, 140));
+    objects.add(box2);  
 
     auto Metal = make_shared<metal>(color(0.8, 0.85, 0.88), 0);
     auto glass = make_shared<dielectric>(1.5);
-    objects.add(make_shared<sphere>(point3(395,100,300), 100 , Micro));
-    //objects.add(make_shared<sphere>(point3(276,100,300), 50 , Micro2));
-    objects.add(make_shared<sphere>(point3(157,100,300), 100 , Micro1));
+
+    objects.add(make_shared<sphere>(point3(82,165,82)+vec3(310, 60, 260), 60 , Metal));
+    objects.add(make_shared<sphere>(point3(305, 90, 140), 90 , glass));
+
     return objects;
 }
 /*
@@ -243,8 +255,8 @@ int main() {
     //要采样的面光源
     hittable_list lights;
     lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554.0, nullptr));
-    //lights.add(make_shared<sphere>(point3(190, 90, 190), 90.0, nullptr));
-    //lights.add(make_shared<sphere>(point3(277,277,277), 150.0, nullptr));
+    lights.add(make_shared<sphere>(point3(305, 90, 140), 90, nullptr));
+    lights.add(make_shared<sphere>(point3(82,165,82)+vec3(310, 60, 260), 60,nullptr));
     cerr<<"\nnumber of sampling area:\t"<<lights.objects.size();
 
 

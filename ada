@@ -21,3 +21,13 @@
     objects.add(make_shared<sphere>(point3(395,100,300), 50 , Micro));
     objects.add(make_shared<sphere>(point3(276,100,300), 50 , Micro1));
     objects.add(make_shared<sphere>(point3(157,100,300), 50 , Micro2));
+    
+    // auto Micro = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
+    // Micro->rough = 0.0;//Micro->Kd = vec3(0.725f, 0.71f, 0.68f);
+
+    // auto Micro1 = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
+    // Micro1->rough = 0.4;//Micro1->Kd = vec3(0.725f, 0.71f, 0.68f);
+
+    // auto Micro2 = make_shared<Mro_lambertian>(color(0.725f, 0.71f, 0.68f));
+    // Micro2->rough = 0.8;Micro2->Kd = vec3(0.725f, 0.71f, 0.68f);
+    //objects.add(make_shared<sphere>(point3(157,100,300), 100 , Micro1));
