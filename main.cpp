@@ -6,7 +6,7 @@ hittable_list simple_light_scene();
 hittable_list cornell_box();
 hittable_list final();
 int image_height = 800;
-int samples_per_pixel = 1024;
+int samples_per_pixel = 10;
 auto aspect_ratio = 1.0;
 //make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
 const int bounce = 5;
@@ -115,15 +115,15 @@ hittable_list cornell_box() {
     auto green = make_shared<lambertian>(color(0.14f, 0.45f, 0.091f));
     auto light = make_shared<diffuse_light>(color(8.0f * color(0.747f+0.058f, 0.747f+0.258f, 0.747f) + 15.6f * color(0.740f+0.287f,0.740f+0.160f,0.740f) + 18.4f *color(0.737f+0.642f,0.737f+0.159f,0.737f)));
     
-    for (int j = 0; j < 500; j++) {
-        auto albedo = color::random() * color(89,183,107)/255.0;
-        objects.add(make_shared<sphere>(vec3::random(0,150)+vec3(390,330,200), 8 , make_shared<lambertian>(albedo)));
-    }
+    // for (int j = 0; j < 500; j++) {
+    //     auto albedo = color::random() * color(89,183,107)/255.0;
+    //     objects.add(make_shared<sphere>(vec3::random(0,150)+vec3(390,330,200), 8 , make_shared<lambertian>(albedo)));
+    // }
 
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, purple));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
     objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
-    objects.add(make_shared<xz_rect>(0, 550, 0, 550, 0, blue));
+    objects.add(make_shared<xz_rect>(0, 555, 0, 550, 0, blue));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, green));
 
