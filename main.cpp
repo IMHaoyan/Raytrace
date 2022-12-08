@@ -9,6 +9,11 @@ int image_height = 800;
 int samples_per_pixel = 10;
 auto aspect_ratio = 1.0;
 //make && ./Raytrace > output_cos.ppm && eog output_cos.ppm
+
+//15点44分2022年12月8日
+//本框架有一个问题： 在对物体额外采样时候，实际上是在物体和光源之间做了一个概率取舍（把物体当成一个光源）
+//              这样会挤占原来的主光源可以被采样到的采样点个数，所以会有同样ssp下质量反而下降的情况
+//              而且由于多了mix操作，时间有额外开销，所以当物体影响不大时候尽量不使用对物体采样
 const int bounce = 5;
 const int max_depth = bounce + 1;
 const int num_threads = 10;
